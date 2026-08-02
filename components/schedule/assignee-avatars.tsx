@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface AssigneeAvatarsProps {
-  people: { id: number; name: string }[];
+  people: { id: number; name: string; positionName?: string | null }[];
 }
 
 function initials(name: string) {
@@ -25,7 +25,12 @@ export function AssigneeAvatars({ people }: AssigneeAvatarsProps) {
           <Avatar className="size-6">
             <AvatarFallback className="text-xs">{initials(person.name)}</AvatarFallback>
           </Avatar>
-          <span className="text-sm">{person.name}</span>
+          <span className="text-sm">
+            {person.name}
+            {person.positionName && (
+              <span className="text-muted-foreground"> · {person.positionName}</span>
+            )}
+          </span>
         </div>
       ))}
     </div>

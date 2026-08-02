@@ -13,7 +13,7 @@ export default async function AdminLayout({
       <nav className="flex gap-4 border-b pb-2 text-sm font-medium">
         <Link href="/admin">Painel</Link>
         <Link href="/admin/departamentos">Departamentos</Link>
-        <Link href="/admin/usuarios">Usuários</Link>
+        <Link href="/admin/usuarios">Membros</Link>
       </nav>
       {children}
     </div>

@@ -15,7 +15,7 @@ export default async function AdminUsuariosPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold">Usuários</h1>
+        <h1 className="text-lg font-semibold">Membros</h1>
         <Button nativeButton={false} render={<Link href="/admin/usuarios/novo" />}>
           <Plus className="size-4" />
           Novo
@@ -23,7 +23,7 @@ export default async function AdminUsuariosPage() {
       </div>
 
       {users.length === 0 ? (
-        <EmptyState icon={Users} title="Nenhum usuário cadastrado" />
+        <EmptyState icon={Users} title="Nenhum membro cadastrado" />
       ) : (
         <div className="space-y-2">
           {users.map((user) => (

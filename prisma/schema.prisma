@@ -35,14 +35,30 @@ model Department {
   id          Int      @id @default(autoincrement())
   name        String   @db.Text
   description String?  @db.Text
+  color       String   @default("#64748b") @db.Text
   isActive    Boolean  @default(true) @map("is_active")
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   memberships DepartmentMembership[]
   entries     ScheduleEntry[]
+  positions   Position[]
 
   @@map("departments")
+}
+
+model Position {
+  id           Int      @id @default(autoincrement())
+  departmentId Int      @map("department_id")
+  name         String   @db.Text
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  department  Department           @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  assignments ScheduleAssignment[]
+
+  @@unique([departmentId, name])
+  @@index([departmentId])
+  @@map("positions")
 }
 
 model DepartmentMembership {
@@ -79,14 +95,17 @@ model ScheduleEntry {
 }
 
 model ScheduleAssignment {
-  id              Int @id @default(autoincrement())
-  scheduleEntryId Int @map("schedule_entry_id")
-  userId          Int @map("user_id")
+  id              Int  @id @default(autoincrement())
+  scheduleEntryId Int  @map("schedule_entry_id")
+  userId          Int  @map("user_id")
+  positionId      Int? @map("position_id")
 
   scheduleEntry ScheduleEntry @relation(fields: [scheduleEntryId], references: [id], onDelete: Cascade)
   user          User          @relation(fields: [userId], references: [id], onDelete: Restrict)
+  position      Position?     @relation(fields: [positionId], references: [id], onDelete: SetNull)
 
   @@unique([scheduleEntryId, userId])
   @@index([userId])
+  @@index([positionId])
   @@map("schedule_assignments")
 }

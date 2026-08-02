@@ -6,10 +6,10 @@ export default function NovoUsuarioPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Novo usuário</CardTitle>
+        <CardTitle>Novo membro</CardTitle>
       </CardHeader>
       <CardContent>
-        <UserForm action={createUserAction} showPassword submitLabel="Criar usuário" />
+        <UserForm action={createUserAction} showPassword submitLabel="Criar membro" />
       </CardContent>
     </Card>
   );

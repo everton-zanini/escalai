@@ -18,11 +18,14 @@ export default async function NovaEscalaPage({
   const department = await prisma.department.findUnique({ where: { id: departmentId } });
   if (!department) notFound();
 
-  const memberships = await prisma.departmentMembership.findMany({
-    where: { departmentId },
-    include: { user: true },
-    orderBy: { user: { name: "asc" } },
-  });
+  const [memberships, positions] = await Promise.all([
+    prisma.departmentMembership.findMany({
+      where: { departmentId },
+      include: { user: true },
+      orderBy: { user: { name: "asc" } },
+    }),
+    prisma.position.findMany({ where: { departmentId }, orderBy: { name: "asc" } }),
+  ]);
 
   const boundAction = createEntryAction.bind(null, departmentId);
 
@@ -36,6 +39,7 @@ export default async function NovaEscalaPage({
           <EntryForm
             action={boundAction}
             members={memberships.map((m) => ({ id: m.userId, name: m.user.name }))}
+            positions={positions}
           />
         </CardContent>
       </Card>

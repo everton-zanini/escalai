@@ -9,11 +9,12 @@ import type { FormState } from "./actions";
 interface EntryFormProps {
   action: (prevState: FormState, formData: FormData) => Promise<FormState>;
   members: { id: number; name: string }[];
+  positions: { id: number; name: string }[];
   defaultValues?: {
     date: string;
     title: string;
     note: string;
-    assigneeIds: number[];
+    assignments: { userId: number; positionId: number | null }[];
   };
   submitLabel?: string;
 }
@@ -23,11 +24,14 @@ const initialState: FormState = {};
 export function EntryForm({
   action,
   members,
+  positions,
   defaultValues,
   submitLabel = "Salvar escala",
 }: EntryFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const assignedSet = new Set(defaultValues?.assigneeIds ?? []);
+  const assignedMap = new Map(
+    (defaultValues?.assignments ?? []).map((a) => [a.userId, a.positionId])
+  );
 
   return (
     <form action={formAction} className="space-y-4">
@@ -62,19 +66,37 @@ export function EntryForm({
             Este departamento ainda não tem membros.
           </p>
         ) : (
-          <div className="max-h-56 space-y-2 overflow-y-auto rounded-lg border p-3">
-            {members.map((member) => (
-              <label key={member.id} className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  name="assigneeIds"
-                  value={member.id}
-                  defaultChecked={assignedSet.has(member.id)}
-                  className="size-4 rounded border-input"
-                />
-                {member.name}
-              </label>
-            ))}
+          <div className="max-h-64 space-y-2 overflow-y-auto rounded-lg border p-3">
+            {members.map((member) => {
+              const currentPositionId = assignedMap.get(member.id) ?? null;
+              return (
+                <div key={member.id} className="flex items-center gap-2 text-sm">
+                  <label className="flex flex-1 items-center gap-2">
+                    <input
+                      type="checkbox"
+                      name={`assignee-${member.id}`}
+                      defaultChecked={assignedMap.has(member.id)}
+                      className="size-4 rounded border-input"
+                    />
+                    {member.name}
+                  </label>
+                  {positions.length > 0 && (
+                    <select
+                      name={`position-${member.id}`}
+                      defaultValue={currentPositionId ?? ""}
+                      className="h-8 rounded-lg border border-input bg-transparent px-2 text-sm"
+                    >
+                      <option value="">Sem função</option>
+                      {positions.map((position) => (
+                        <option key={position.id} value={position.id}>
+                          {position.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

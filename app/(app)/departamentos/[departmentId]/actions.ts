@@ -10,35 +10,88 @@ export interface FormState {
   error?: string;
 }
 
+async function buildAssignments(departmentId: number, formData: FormData) {
+  const [memberships, positions] = await Promise.all([
+    prisma.departmentMembership.findMany({ where: { departmentId } }),
+    prisma.position.findMany({ where: { departmentId } }),
+  ]);
+  const validPositionIds = new Set(positions.map((p) => p.id));
+
+  return memberships
+    .filter((m) => formData.get(`assignee-${m.userId}`) != null)
+    .map((m) => {
+      const raw = formData.get(`position-${m.userId}`);
+      const positionId = raw ? Number(raw) : null;
+      return {
+        userId: m.userId,
+        positionId: positionId && validPositionIds.has(positionId) ? positionId : null,
+      };
+    });
+}
+
+async function findSameDayConflict(
+  userIds: number[],
+  date: Date,
+  excludeEntryId?: number
+) {
+  if (userIds.length === 0) return null;
+
+  const conflicts = await prisma.scheduleAssignment.findMany({
+    where: {
+      userId: { in: userIds },
+      scheduleEntry: {
+        date,
+        id: excludeEntryId ? { not: excludeEntryId } : undefined,
+      },
+    },
+    include: { user: true, scheduleEntry: { include: { department: true } } },
+  });
+
+  if (conflicts.length === 0) return null;
+
+  const c = conflicts[0];
+  return `${c.user.name} já está escalado(a) em ${c.scheduleEntry.department.name} neste dia.`;
+}
+
 export async function createEntryAction(
   departmentId: number,
   _prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
-  await requireDepartmentLeader(departmentId);
+  const user = await requireDepartmentLeader(departmentId);
 
   const parsed = scheduleEntrySchema.safeParse({
     date: formData.get("date"),
     title: formData.get("title") || undefined,
     note: formData.get("note") || undefined,
-    assigneeIds: formData.getAll("assigneeIds"),
+    assignments: await buildAssignments(departmentId, formData),
   });
 
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Dados inválidos." };
   }
 
-  const user = await requireDepartmentLeader(departmentId);
+  const date = new Date(parsed.data.date);
+  const conflictError = await findSameDayConflict(
+    parsed.data.assignments.map((a) => a.userId),
+    date
+  );
+  if (conflictError) {
+    return { error: conflictError };
+  }
 
   await prisma.scheduleEntry.create({
     data: {
       departmentId,
-      date: new Date(parsed.data.date),
+      date,
       title: parsed.data.title ?? null,
       note: parsed.data.note ?? null,
       createdById: Number(user.id),
       assignments: {
-        create: parsed.data.assigneeIds.map((userId) => ({ userId })),
+        create: parsed.data.assignments.map((a) => ({
+          userId: a.userId,
+          positionId: a.positionId,
+        })),
       },
     },
   });
@@ -59,11 +112,21 @@ export async function updateEntryAction(
     date: formData.get("date"),
     title: formData.get("title") || undefined,
     note: formData.get("note") || undefined,
-    assigneeIds: formData.getAll("assigneeIds"),
+    assignments: await buildAssignments(departmentId, formData),
   });
 
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Dados inválidos." };
+  }
+
+  const date = new Date(parsed.data.date);
+  const conflictError = await findSameDayConflict(
+    parsed.data.assignments.map((a) => a.userId),
+    date,
+    entryId
+  );
+  if (conflictError) {
+    return { error: conflictError };
   }
 
   await prisma.$transaction([
@@ -71,11 +134,14 @@ export async function updateEntryAction(
     prisma.scheduleEntry.update({
       where: { id: entryId },
       data: {
-        date: new Date(parsed.data.date),
+        date,
         title: parsed.data.title ?? null,
         note: parsed.data.note ?? null,
         assignments: {
-          create: parsed.data.assigneeIds.map((userId) => ({ userId })),
+          create: parsed.data.assignments.map((a) => ({
+            userId: a.userId,
+            positionId: a.positionId,
+          })),
         },
       },
     }),

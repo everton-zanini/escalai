@@ -8,7 +8,7 @@ export async function changeOwnPassword(
 ): Promise<{ error?: string }> {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) {
-    return { error: "Usuário não encontrado." };
+    return { error: "Membro não encontrado." };
   }
 
   const currentMatches = await verifyPassword(currentPassword, user.passwordHash);

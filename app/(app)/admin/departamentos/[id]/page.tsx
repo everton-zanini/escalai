@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { DepartmentForm } from "../department-form";
 import { AddMemberForm } from "./add-member-form";
+import { DepartmentColorDot } from "@/components/schedule/department-color-dot";
 import {
   updateDepartmentAction,
   toggleDepartmentActiveAction,
@@ -43,7 +45,10 @@ export default async function DepartamentoDetalhePage({
     <div className="space-y-4">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0">
-          <CardTitle>{department.name}</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <DepartmentColorDot color={department.color} />
+            {department.name}
+          </CardTitle>
           <div className="flex items-center gap-2">
             {!department.isActive && <Badge variant="secondary">Inativo</Badge>}
             <form action={toggleDepartmentActiveAction}>
@@ -63,8 +68,16 @@ export default async function DepartamentoDetalhePage({
       </Card>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
           <CardTitle className="text-base">Membros</CardTitle>
+          <Button
+            variant="outline"
+            size="sm"
+            nativeButton={false}
+            render={<Link href={`/departamentos/${departmentId}/funcoes`} />}
+          >
+            Gerenciar funções
+          </Button>
         </CardHeader>
         <CardContent className="space-y-4">
           <AddMemberForm departmentId={departmentId} availableUsers={availableUsers} />

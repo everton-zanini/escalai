@@ -34,7 +34,7 @@ export async function createUserAction(
 
   const existing = await prisma.user.findUnique({ where: { email: parsed.data.email } });
   if (existing) {
-    return { error: "Já existe um usuário com este e-mail." };
+    return { error: "Já existe um membro com este e-mail." };
   }
 
   const passwordHash = await hashPassword(parsed.data.password);
@@ -64,7 +64,7 @@ export async function updateUserAction(
 
   const existing = await prisma.user.findUnique({ where: { email: parsed.data.email } });
   if (existing && existing.id !== userId) {
-    return { error: "Já existe um usuário com este e-mail." };
+    return { error: "Já existe um membro com este e-mail." };
   }
 
   await prisma.user.update({ where: { id: userId }, data: parsed.data });

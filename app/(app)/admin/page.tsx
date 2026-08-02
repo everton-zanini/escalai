@@ -11,7 +11,7 @@ export default async function AdminDashboardPage() {
 
   const cards = [
     { href: "/admin/departamentos", label: "Departamentos", value: departmentCount },
-    { href: "/admin/usuarios", label: "Usuários", value: userCount },
+    { href: "/admin/usuarios", label: "Membros", value: userCount },
     { href: "/departamentos", label: "Escalas lançadas", value: entryCount },
   ];
 

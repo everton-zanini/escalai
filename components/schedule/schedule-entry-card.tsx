@@ -11,7 +11,10 @@ interface ScheduleEntryCardProps {
     date: Date | string;
     title: string | null;
     note: string | null;
-    assignments: { user: { id: number; name: string } }[];
+    assignments: {
+      user: { id: number; name: string };
+      position: { id: number; name: string } | null;
+    }[];
   };
   departmentId: number;
   canManage: boolean;
@@ -40,7 +43,12 @@ export function ScheduleEntryCard({ entry, departmentId, canManage }: ScheduleEn
         )}
       </CardHeader>
       <CardContent>
-        <AssigneeAvatars people={entry.assignments.map((a) => a.user)} />
+        <AssigneeAvatars
+          people={entry.assignments.map((a) => ({
+            ...a.user,
+            positionName: a.position?.name ?? null,
+          }))}
+        />
       </CardContent>
     </Card>
   );

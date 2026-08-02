@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/schedule/empty-state";
+import { DepartmentColorDot } from "@/components/schedule/department-color-dot";
 import { Building2 } from "lucide-react";
 
 export default async function DepartamentosPage() {
@@ -43,7 +44,10 @@ export default async function DepartamentosPage() {
             <Link key={department.id} href={`/departamentos/${department.id}`}>
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                  <CardTitle className="text-base">{department.name}</CardTitle>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <DepartmentColorDot color={department.color} />
+                    {department.name}
+                  </CardTitle>
                   {role && (
                     <Badge variant={role === "LIDER" ? "default" : "secondary"}>
                       {role === "LIDER" ? "Líder" : "Membro"}

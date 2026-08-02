@@ -4,7 +4,11 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
-import { departmentSchema, membershipSchema } from "@/lib/validations/department";
+import {
+  departmentSchema,
+  createDepartmentSchema,
+  membershipSchema,
+} from "@/lib/validations/department";
 
 export interface FormState {
   error?: string;
@@ -16,9 +20,10 @@ export async function createDepartmentAction(
 ): Promise<FormState> {
   await requireAdmin();
 
-  const parsed = departmentSchema.safeParse({
+  const parsed = createDepartmentSchema.safeParse({
     name: formData.get("name"),
     description: formData.get("description") || undefined,
+    color: formData.get("color"),
   });
 
   if (!parsed.success) {

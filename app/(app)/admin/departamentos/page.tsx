@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/schedule/empty-state";
+import { DepartmentColorDot } from "@/components/schedule/department-color-dot";
 import { Building2, Plus } from "lucide-react";
 
 export default async function AdminDepartamentosPage() {
@@ -31,7 +32,10 @@ export default async function AdminDepartamentosPage() {
               <Card>
                 <CardContent className="flex items-center justify-between py-4">
                   <div>
-                    <p className="font-medium">{department.name}</p>
+                    <p className="flex items-center gap-2 font-medium">
+                      <DepartmentColorDot color={department.color} />
+                      {department.name}
+                    </p>
                     <p className="text-sm text-muted-foreground">
                       {department._count.memberships} pessoa(s)
                     </p>

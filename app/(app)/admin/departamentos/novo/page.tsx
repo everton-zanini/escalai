@@ -9,7 +9,11 @@ export default function NovoDepartamentoPage() {
         <CardTitle>Novo departamento</CardTitle>
       </CardHeader>
       <CardContent>
-        <DepartmentForm action={createDepartmentAction} submitLabel="Criar departamento" />
+        <DepartmentForm
+          action={createDepartmentAction}
+          showColorPicker
+          submitLabel="Criar departamento"
+        />
       </CardContent>
     </Card>
   );

@@ -17,7 +17,7 @@ export default async function EditarEscalaPage({
 
   await requireDepartmentLeader(departmentId);
 
-  const [department, entry, memberships] = await Promise.all([
+  const [department, entry, memberships, positions] = await Promise.all([
     prisma.department.findUnique({ where: { id: departmentId } }),
     prisma.scheduleEntry.findUnique({
       where: { id: entryId },
@@ -28,6 +28,7 @@ export default async function EditarEscalaPage({
       include: { user: true },
       orderBy: { user: { name: "asc" } },
     }),
+    prisma.position.findMany({ where: { departmentId }, orderBy: { name: "asc" } }),
   ]);
 
   if (!department || !entry || entry.departmentId !== departmentId) notFound();
@@ -44,11 +45,15 @@ export default async function EditarEscalaPage({
           <EntryForm
             action={boundUpdate}
             members={memberships.map((m) => ({ id: m.userId, name: m.user.name }))}
+            positions={positions}
             defaultValues={{
               date: entry.date.toISOString().slice(0, 10),
               title: entry.title ?? "",
               note: entry.note ?? "",
-              assigneeIds: entry.assignments.map((a) => a.userId),
+              assignments: entry.assignments.map((a) => ({
+                userId: a.userId,
+                positionId: a.positionId,
+              })),
             }}
             submitLabel="Salvar alterações"
           />

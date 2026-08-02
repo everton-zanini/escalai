@@ -18,7 +18,7 @@ export function AddMemberForm({ departmentId, availableUsers }: AddMemberFormPro
   if (availableUsers.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
-        Todos os usuários ativos já fazem parte deste departamento.
+        Todos os membros ativos já fazem parte deste departamento.
       </p>
     );
   }
