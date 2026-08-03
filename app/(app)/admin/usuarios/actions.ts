@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
-import { hashPassword, generateTempPassword } from "@/lib/password";
+import { hashPassword, generateTempPassword, DEFAULT_PASSWORD } from "@/lib/password";
 import { createUserSchema, updateUserSchema } from "@/lib/validations/user";
 
 export interface FormState {
@@ -25,7 +25,6 @@ export async function createUserAction(
   const parsed = createUserSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
-    password: formData.get("password"),
   });
 
   if (!parsed.success) {
@@ -37,9 +36,14 @@ export async function createUserAction(
     return { error: "Já existe um membro com este e-mail." };
   }
 
-  const passwordHash = await hashPassword(parsed.data.password);
+  const passwordHash = await hashPassword(DEFAULT_PASSWORD);
   const user = await prisma.user.create({
-    data: { name: parsed.data.name, email: parsed.data.email, passwordHash },
+    data: {
+      name: parsed.data.name,
+      email: parsed.data.email,
+      passwordHash,
+      mustChangePassword: true,
+    },
   });
 
   revalidatePath("/admin/usuarios");

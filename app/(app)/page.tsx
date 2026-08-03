@@ -58,9 +58,9 @@ export default async function InicioPage() {
           description="Quando você for escalado em um departamento, aparecerá aqui."
         />
       ) : (
-        assignments.map(({ scheduleEntry, position }) => (
+        assignments.map(({ id, scheduleEntry, position }) => (
           <Link
-            key={scheduleEntry.id}
+            key={id}
             href={`/departamentos/${scheduleEntry.departmentId}`}
             className="block"
           >

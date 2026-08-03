@@ -29,9 +29,12 @@ export function EntryForm({
   submitLabel = "Salvar escala",
 }: EntryFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const assignedMap = new Map(
-    (defaultValues?.assignments ?? []).map((a) => [a.userId, a.positionId])
-  );
+  const assignedPositionsByUser = new Map<number, Set<number | null>>();
+  for (const a of defaultValues?.assignments ?? []) {
+    const set = assignedPositionsByUser.get(a.userId) ?? new Set<number | null>();
+    set.add(a.positionId);
+    assignedPositionsByUser.set(a.userId, set);
+  }
 
   return (
     <form action={formAction} className="space-y-4">
@@ -68,31 +71,32 @@ export function EntryForm({
         ) : (
           <div className="max-h-64 space-y-2 overflow-y-auto rounded-lg border p-3">
             {members.map((member) => {
-              const currentPositionId = assignedMap.get(member.id) ?? null;
+              const memberPositions = assignedPositionsByUser.get(member.id);
               return (
-                <div key={member.id} className="flex items-center gap-2 text-sm">
-                  <label className="flex flex-1 items-center gap-2">
+                <div key={member.id} className="space-y-1 text-sm">
+                  <label className="flex items-center gap-2">
                     <input
                       type="checkbox"
                       name={`assignee-${member.id}`}
-                      defaultChecked={assignedMap.has(member.id)}
+                      defaultChecked={memberPositions !== undefined}
                       className="size-4 rounded border-input"
                     />
                     {member.name}
                   </label>
                   {positions.length > 0 && (
-                    <select
-                      name={`position-${member.id}`}
-                      defaultValue={currentPositionId ?? ""}
-                      className="h-8 rounded-lg border border-input bg-transparent px-2 text-sm"
-                    >
-                      <option value="">Sem função</option>
+                    <div className="flex flex-wrap gap-x-3 gap-y-1 pl-6">
                       {positions.map((position) => (
-                        <option key={position.id} value={position.id}>
+                        <label key={position.id} className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <input
+                            type="checkbox"
+                            name={`position-${member.id}-${position.id}`}
+                            defaultChecked={memberPositions?.has(position.id) ?? false}
+                            className="size-3.5 rounded border-input"
+                          />
                           {position.name}
-                        </option>
+                        </label>
                       ))}
-                    </select>
+                    </div>
                   )}
                 </div>
               );

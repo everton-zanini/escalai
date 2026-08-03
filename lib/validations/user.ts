@@ -8,7 +8,6 @@ export const createUserSchema = z.object({
     .min(1, "Informe o e-mail")
     .email("E-mail inválido")
     .toLowerCase(),
-  password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres"),
 });
 
 export type CreateUserInput = z.infer<typeof createUserSchema>;

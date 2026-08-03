@@ -104,7 +104,7 @@ model ScheduleAssignment {
   user          User          @relation(fields: [userId], references: [id], onDelete: Restrict)
   position      Position?     @relation(fields: [positionId], references: [id], onDelete: SetNull)
 
-  @@unique([scheduleEntryId, userId])
+  @@unique([scheduleEntryId, userId, positionId])
   @@index([userId])
   @@index([positionId])
   @@map("schedule_assignments")

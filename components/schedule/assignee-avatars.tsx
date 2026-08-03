@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface AssigneeAvatarsProps {
-  people: { id: number; name: string; positionName?: string | null }[];
+  people: { key: number | string; name: string; positionName?: string | null }[];
 }
 
 function initials(name: string) {
@@ -21,7 +21,7 @@ export function AssigneeAvatars({ people }: AssigneeAvatarsProps) {
   return (
     <div className="flex flex-wrap items-center gap-2">
       {people.map((person) => (
-        <div key={person.id} className="flex items-center gap-1.5">
+        <div key={person.key} className="flex items-center gap-1.5">
           <Avatar className="size-6">
             <AvatarFallback className="text-xs">{initials(person.name)}</AvatarFallback>
           </Avatar>

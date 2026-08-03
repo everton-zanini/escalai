@@ -12,6 +12,7 @@ interface ScheduleEntryCardProps {
     title: string | null;
     note: string | null;
     assignments: {
+      id: number;
       user: { id: number; name: string };
       position: { id: number; name: string } | null;
     }[];
@@ -45,7 +46,8 @@ export function ScheduleEntryCard({ entry, departmentId, canManage }: ScheduleEn
       <CardContent>
         <AssigneeAvatars
           people={entry.assignments.map((a) => ({
-            ...a.user,
+            key: a.id,
+            name: a.user.name,
             positionName: a.position?.name ?? null,
           }))}
         />

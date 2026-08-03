@@ -15,21 +15,29 @@ async function buildAssignments(departmentId: number, formData: FormData) {
     prisma.departmentMembership.findMany({ where: { departmentId } }),
     prisma.position.findMany({ where: { departmentId } }),
   ]);
-  const validPositionIds = new Set(positions.map((p) => p.id));
+  const assignments: { userId: number; positionId: number | null }[] = [];
 
-  return memberships
-    .filter((m) => formData.get(`assignee-${m.userId}`) != null)
-    .map((m) => {
-      const raw = formData.get(`position-${m.userId}`);
-      const positionId = raw ? Number(raw) : null;
-      return {
-        userId: m.userId,
-        positionId: positionId && validPositionIds.has(positionId) ? positionId : null,
-      };
-    });
+  for (const m of memberships) {
+    if (formData.get(`assignee-${m.userId}`) == null) continue;
+
+    const selectedPositionIds = positions
+      .filter((p) => formData.get(`position-${m.userId}-${p.id}`) != null)
+      .map((p) => p.id);
+
+    if (selectedPositionIds.length === 0) {
+      assignments.push({ userId: m.userId, positionId: null });
+    } else {
+      for (const positionId of selectedPositionIds) {
+        assignments.push({ userId: m.userId, positionId });
+      }
+    }
+  }
+
+  return assignments;
 }
 
-async function findSameDayConflict(
+async function findCrossDepartmentConflict(
+  departmentId: number,
   userIds: number[],
   date: Date,
   excludeEntryId?: number
@@ -41,6 +49,7 @@ async function findSameDayConflict(
       userId: { in: userIds },
       scheduleEntry: {
         date,
+        departmentId: { not: departmentId },
         id: excludeEntryId ? { not: excludeEntryId } : undefined,
       },
     },
@@ -72,7 +81,8 @@ export async function createEntryAction(
   }
 
   const date = new Date(parsed.data.date);
-  const conflictError = await findSameDayConflict(
+  const conflictError = await findCrossDepartmentConflict(
+    departmentId,
     parsed.data.assignments.map((a) => a.userId),
     date
   );
@@ -120,7 +130,8 @@ export async function updateEntryAction(
   }
 
   const date = new Date(parsed.data.date);
-  const conflictError = await findSameDayConflict(
+  const conflictError = await findCrossDepartmentConflict(
+    departmentId,
     parsed.data.assignments.map((a) => a.userId),
     date,
     entryId
