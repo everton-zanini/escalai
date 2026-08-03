@@ -21,7 +21,7 @@ export default async function AppLayout({
 
   return (
     <div className="flex min-h-full flex-1 flex-col">
-      <Header title="Escalai" />
+      <Header title="Escalaí" />
       <main className="flex-1 pb-20 md:pb-4">{children}</main>
       <BottomNav isAdmin={user.isAdmin} />
     </div>
