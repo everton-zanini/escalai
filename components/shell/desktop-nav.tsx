@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Home, CalendarDays, User, ShieldCheck } from "lucide-react";
+import { Home, CalendarDays, User, ShieldCheck, Users } from "lucide-react";
 
 interface DesktopNavProps {
   isAdmin: boolean;
+  isLeader: boolean;
 }
 
 const baseItems = [
@@ -15,11 +16,13 @@ const baseItems = [
   { href: "/perfil", label: "Perfil", icon: User },
 ];
 
-export function DesktopNav({ isAdmin }: DesktopNavProps) {
+export function DesktopNav({ isAdmin, isLeader }: DesktopNavProps) {
   const pathname = usePathname();
-  const items = isAdmin
-    ? [...baseItems, { href: "/admin", label: "Admin", icon: ShieldCheck }]
-    : baseItems;
+  const items = [
+    ...baseItems,
+    ...(isLeader ? [{ href: "/lider", label: "Líder", icon: Users }] : []),
+    ...(isAdmin ? [{ href: "/admin", label: "Admin", icon: ShieldCheck }] : []),
+  ];
 
   return (
     <nav className="hidden md:flex md:items-center md:gap-1">

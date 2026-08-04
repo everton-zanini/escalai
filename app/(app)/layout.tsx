@@ -19,11 +19,13 @@ export default async function AppLayout({
     redirect("/trocar-senha");
   }
 
+  const isLeader = user.isAdmin || user.departmentRoles.some((d) => d.role === "LIDER");
+
   return (
     <div className="flex min-h-full flex-1 flex-col">
-      <Header title="Escalaí" isAdmin={user.isAdmin} />
+      <Header title="Escalaí" isAdmin={user.isAdmin} isLeader={isLeader} />
       <main className="flex-1 pb-20 md:pb-4">{children}</main>
-      <BottomNav isAdmin={user.isAdmin} />
+      <BottomNav isAdmin={user.isAdmin} isLeader={isLeader} />
     </div>
   );
 }

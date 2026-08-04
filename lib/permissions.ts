@@ -18,6 +18,17 @@ export async function requireAdmin() {
   return user;
 }
 
+export async function requireAnyDepartmentLeader() {
+  const user = await requireUser();
+  if (user.isAdmin) return user;
+
+  if (!user.departmentRoles.some((d) => d.role === "LIDER")) {
+    notFound();
+  }
+
+  return user;
+}
+
 export async function requireDepartmentLeader(departmentId: number) {
   const user = await requireUser();
   if (user.isAdmin) return user;

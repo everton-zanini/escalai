@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Home, CalendarDays, User, ShieldCheck } from "lucide-react";
+import { Home, CalendarDays, User, ShieldCheck, Users } from "lucide-react";
 
 interface BottomNavProps {
   isAdmin: boolean;
+  isLeader: boolean;
 }
 
 const baseItems = [
@@ -15,15 +16,19 @@ const baseItems = [
   { href: "/perfil", label: "Perfil", icon: User },
 ];
 
-export function BottomNav({ isAdmin }: BottomNavProps) {
+const GRID_COLS = ["grid-cols-3", "grid-cols-4", "grid-cols-5"];
+
+export function BottomNav({ isAdmin, isLeader }: BottomNavProps) {
   const pathname = usePathname();
-  const items = isAdmin
-    ? [...baseItems, { href: "/admin", label: "Admin", icon: ShieldCheck }]
-    : baseItems;
+  const items = [
+    ...baseItems,
+    ...(isLeader ? [{ href: "/lider", label: "Líder", icon: Users }] : []),
+    ...(isAdmin ? [{ href: "/admin", label: "Admin", icon: ShieldCheck }] : []),
+  ];
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-50 border-t bg-background pb-[env(safe-area-inset-bottom)] md:hidden">
-      <ul className={cn("grid", isAdmin ? "grid-cols-4" : "grid-cols-3")}>
+      <ul className={cn("grid", GRID_COLS[items.length - 3])}>
         {items.map(({ href, label, icon: Icon }) => {
           const isActive =
             href === "/" ? pathname === "/" : pathname.startsWith(href);
