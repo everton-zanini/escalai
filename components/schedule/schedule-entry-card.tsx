@@ -9,6 +9,7 @@ interface ScheduleEntryCardProps {
   entry: {
     id: number;
     date: Date | string;
+    time: string | null;
     title: string | null;
     note: string | null;
     assignments: {
@@ -26,7 +27,10 @@ export function ScheduleEntryCard({ entry, departmentId, canManage }: ScheduleEn
     <Card>
       <CardHeader className="flex flex-row items-start justify-between gap-2 space-y-0">
         <div>
-          <p className="text-sm font-medium capitalize">{formatDatePtBR(entry.date)}</p>
+          <p className="text-sm font-medium capitalize">
+            {formatDatePtBR(entry.date)}
+            {entry.time && <span className="font-normal text-muted-foreground"> · {entry.time}</span>}
+          </p>
           {entry.title && <p className="text-base font-semibold">{entry.title}</p>}
           {entry.note && <p className="text-sm text-muted-foreground">{entry.note}</p>}
         </div>

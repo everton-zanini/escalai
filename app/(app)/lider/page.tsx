@@ -28,7 +28,7 @@ export default async function LiderPage({
   const entries = await prisma.scheduleEntry.findMany({
     where,
     include: { department: true, assignments: { include: { user: true, position: true } } },
-    orderBy: { department: { name: "asc" } },
+    orderBy: [{ time: { sort: "asc", nulls: "last" } }, { department: { name: "asc" } }],
   });
 
   return (

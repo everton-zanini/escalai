@@ -12,6 +12,7 @@ interface EntryFormProps {
   positions: { id: number; name: string }[];
   defaultValues?: {
     date: string;
+    time: string;
     title: string;
     note: string;
     assignments: { userId: number; positionId: number | null }[];
@@ -46,6 +47,15 @@ export function EntryForm({
           type="date"
           required
           defaultValue={defaultValues?.date}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="time">Horário (opcional)</Label>
+        <Input
+          id="time"
+          name="time"
+          type="time"
+          defaultValue={defaultValues?.time}
         />
       </div>
       <div className="space-y-2">

@@ -46,7 +46,7 @@ export default async function DepartamentoEscalaPage({
       ...(range ? { date: { gte: range.from, lte: range.to } } : {}),
     },
     include: { assignments: { include: { user: true, position: true } } },
-    orderBy: { date: "asc" },
+    orderBy: [{ date: "asc" }, { time: { sort: "asc", nulls: "last" } }],
   });
 
   const roleClaim = user.departmentRoles.find((d) => d.departmentId === departmentId);

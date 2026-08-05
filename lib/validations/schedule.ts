@@ -7,6 +7,11 @@ export const scheduleAssignmentInputSchema = z.object({
 
 export const scheduleEntrySchema = z.object({
   date: z.string().min(1, "Informe a data"),
+  time: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Horário inválido")
+    .optional()
+    .or(z.literal("")),
   title: z.string().optional(),
   note: z.string().optional(),
   assignments: z.array(scheduleAssignmentInputSchema).default([]),

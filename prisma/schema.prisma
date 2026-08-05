@@ -80,6 +80,7 @@ model ScheduleEntry {
   id           Int      @id @default(autoincrement())
   departmentId Int      @map("department_id")
   date         DateTime @db.Date
+  time         String?  @db.Text
   title        String?  @db.Text
   note         String?  @db.Text
   createdById  Int      @map("created_by_id")

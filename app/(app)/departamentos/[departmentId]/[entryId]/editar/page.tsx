@@ -48,6 +48,7 @@ export default async function EditarEscalaPage({
             positions={positions}
             defaultValues={{
               date: entry.date.toISOString().slice(0, 10),
+              time: entry.time ?? "",
               title: entry.title ?? "",
               note: entry.note ?? "",
               assignments: entry.assignments.map((a) => ({

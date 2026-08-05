@@ -79,6 +79,9 @@ export default async function InicioPage() {
                 </div>
                 <p className="text-sm font-medium capitalize">
                   {formatDatePtBR(scheduleEntry.date)}
+                  {scheduleEntry.time && (
+                    <span className="font-normal text-muted-foreground"> · {scheduleEntry.time}</span>
+                  )}
                 </p>
               </CardHeader>
               {scheduleEntry.title && (

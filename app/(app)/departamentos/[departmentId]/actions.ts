@@ -71,6 +71,7 @@ export async function createEntryAction(
 
   const parsed = scheduleEntrySchema.safeParse({
     date: formData.get("date"),
+    time: formData.get("time") || undefined,
     title: formData.get("title") || undefined,
     note: formData.get("note") || undefined,
     assignments: await buildAssignments(departmentId, formData),
@@ -94,6 +95,7 @@ export async function createEntryAction(
     data: {
       departmentId,
       date,
+      time: parsed.data.time || null,
       title: parsed.data.title ?? null,
       note: parsed.data.note ?? null,
       createdById: Number(user.id),
@@ -120,6 +122,7 @@ export async function updateEntryAction(
 
   const parsed = scheduleEntrySchema.safeParse({
     date: formData.get("date"),
+    time: formData.get("time") || undefined,
     title: formData.get("title") || undefined,
     note: formData.get("note") || undefined,
     assignments: await buildAssignments(departmentId, formData),
@@ -146,6 +149,7 @@ export async function updateEntryAction(
       where: { id: entryId },
       data: {
         date,
+        time: parsed.data.time || null,
         title: parsed.data.title ?? null,
         note: parsed.data.note ?? null,
         assignments: {
