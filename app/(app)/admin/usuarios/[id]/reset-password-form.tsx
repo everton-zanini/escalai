@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { resetPasswordAction, type ResetPasswordState } from "../actions";
 
@@ -12,6 +13,11 @@ const initialState: ResetPasswordState = {};
 
 export function ResetPasswordForm({ userId }: ResetPasswordFormProps) {
   const [state, formAction, isPending] = useActionState(resetPasswordAction, initialState);
+
+  useEffect(() => {
+    if (state.error) toast.error(state.error);
+    else if (state.tempPassword) toast.success("Senha redefinida com sucesso.");
+  }, [state]);
 
   return (
     <div className="space-y-3">

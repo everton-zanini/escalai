@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requireDepartmentLeader } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { positionSchema } from "@/lib/validations/position";
+import { redirectWithToast } from "@/lib/toast-redirect";
 
 export interface FormState {
   error?: string;
@@ -40,7 +41,21 @@ export async function deletePositionAction(formData: FormData) {
   const positionId = Number(formData.get("positionId"));
 
   await requireDepartmentLeader(departmentId);
-  await prisma.position.delete({ where: { id: positionId } });
+
+  try {
+    await prisma.position.delete({ where: { id: positionId } });
+  } catch {
+    redirectWithToast(
+      `/departamentos/${departmentId}/funcoes`,
+      "error",
+      "Não foi possível excluir a função."
+    );
+  }
 
   revalidatePath(`/departamentos/${departmentId}/funcoes`);
+  redirectWithToast(
+    `/departamentos/${departmentId}/funcoes`,
+    "success",
+    "Função excluída com sucesso."
+  );
 }

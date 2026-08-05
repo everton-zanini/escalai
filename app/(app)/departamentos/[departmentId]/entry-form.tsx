@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,6 +31,11 @@ export function EntryForm({
   submitLabel = "Salvar escala",
 }: EntryFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
+
+  useEffect(() => {
+    if (state.error) toast.error(state.error);
+  }, [state.error]);
+
   const assignedPositionsByUser = new Map<number, Set<number | null>>();
   for (const a of defaultValues?.assignments ?? []) {
     const set = assignedPositionsByUser.get(a.userId) ?? new Set<number | null>();

@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
@@ -9,9 +8,11 @@ import {
   createDepartmentSchema,
   membershipSchema,
 } from "@/lib/validations/department";
+import { redirectWithToast } from "@/lib/toast-redirect";
 
 export interface FormState {
   error?: string;
+  success?: boolean;
 }
 
 export async function createDepartmentAction(
@@ -32,7 +33,11 @@ export async function createDepartmentAction(
 
   const department = await prisma.department.create({ data: parsed.data });
   revalidatePath("/admin/departamentos");
-  redirect(`/admin/departamentos/${department.id}`);
+  redirectWithToast(
+    `/admin/departamentos/${department.id}`,
+    "success",
+    "Departamento criado com sucesso."
+  );
 }
 
 export async function updateDepartmentAction(
@@ -54,19 +59,36 @@ export async function updateDepartmentAction(
   await prisma.department.update({ where: { id: departmentId }, data: parsed.data });
   revalidatePath("/admin/departamentos");
   revalidatePath(`/admin/departamentos/${departmentId}`);
-  return {};
+  return { success: true };
 }
 
 export async function toggleDepartmentActiveAction(formData: FormData) {
   await requireAdmin();
   const departmentId = Number(formData.get("departmentId"));
-  const department = await prisma.department.findUniqueOrThrow({ where: { id: departmentId } });
-  await prisma.department.update({
-    where: { id: departmentId },
-    data: { isActive: !department.isActive },
-  });
+
+  let nextActive = false;
+  try {
+    const department = await prisma.department.findUniqueOrThrow({ where: { id: departmentId } });
+    nextActive = !department.isActive;
+    await prisma.department.update({
+      where: { id: departmentId },
+      data: { isActive: nextActive },
+    });
+  } catch {
+    redirectWithToast(
+      `/admin/departamentos/${departmentId}`,
+      "error",
+      "Não foi possível atualizar o departamento."
+    );
+  }
+
   revalidatePath("/admin/departamentos");
   revalidatePath(`/admin/departamentos/${departmentId}`);
+  redirectWithToast(
+    `/admin/departamentos/${departmentId}`,
+    "success",
+    nextActive ? "Departamento ativado." : "Departamento desativado."
+  );
 }
 
 export async function addMembershipAction(
@@ -97,7 +119,7 @@ export async function addMembershipAction(
   });
 
   revalidatePath(`/admin/departamentos/${parsed.data.departmentId}`);
-  return {};
+  return { success: true };
 }
 
 export async function removeMembershipAction(formData: FormData) {
@@ -105,8 +127,22 @@ export async function removeMembershipAction(formData: FormData) {
   const membershipId = Number(formData.get("membershipId"));
   const departmentId = Number(formData.get("departmentId"));
 
-  await prisma.departmentMembership.delete({ where: { id: membershipId } });
+  try {
+    await prisma.departmentMembership.delete({ where: { id: membershipId } });
+  } catch {
+    redirectWithToast(
+      `/admin/departamentos/${departmentId}`,
+      "error",
+      "Não foi possível remover o membro."
+    );
+  }
+
   revalidatePath(`/admin/departamentos/${departmentId}`);
+  redirectWithToast(
+    `/admin/departamentos/${departmentId}`,
+    "success",
+    "Membro removido do departamento."
+  );
 }
 
 export async function toggleMembershipRoleAction(formData: FormData) {
@@ -115,9 +151,19 @@ export async function toggleMembershipRoleAction(formData: FormData) {
   const departmentId = Number(formData.get("departmentId"));
   const nextRole = formData.get("nextRole") as "LIDER" | "MEMBRO";
 
-  await prisma.departmentMembership.update({
-    where: { id: membershipId },
-    data: { role: nextRole },
-  });
+  try {
+    await prisma.departmentMembership.update({
+      where: { id: membershipId },
+      data: { role: nextRole },
+    });
+  } catch {
+    redirectWithToast(
+      `/admin/departamentos/${departmentId}`,
+      "error",
+      "Não foi possível atualizar o papel do membro."
+    );
+  }
+
   revalidatePath(`/admin/departamentos/${departmentId}`);
+  redirectWithToast(`/admin/departamentos/${departmentId}`, "success", "Papel atualizado com sucesso.");
 }

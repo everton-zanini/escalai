@@ -1,14 +1,15 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, generateTempPassword, DEFAULT_PASSWORD } from "@/lib/password";
 import { createUserSchema, updateUserSchema } from "@/lib/validations/user";
+import { redirectWithToast } from "@/lib/toast-redirect";
 
 export interface FormState {
   error?: string;
+  success?: boolean;
 }
 
 export interface ResetPasswordState {
@@ -47,7 +48,7 @@ export async function createUserAction(
   });
 
   revalidatePath("/admin/usuarios");
-  redirect(`/admin/usuarios/${user.id}`);
+  redirectWithToast(`/admin/usuarios/${user.id}`, "success", "Membro criado com sucesso.");
 }
 
 export async function updateUserAction(
@@ -74,16 +75,33 @@ export async function updateUserAction(
   await prisma.user.update({ where: { id: userId }, data: parsed.data });
   revalidatePath("/admin/usuarios");
   revalidatePath(`/admin/usuarios/${userId}`);
-  return {};
+  return { success: true };
 }
 
 export async function toggleUserActiveAction(formData: FormData) {
   await requireAdmin();
   const userId = Number(formData.get("userId"));
-  const user = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
-  await prisma.user.update({ where: { id: userId }, data: { isActive: !user.isActive } });
+
+  let nextActive = false;
+  try {
+    const user = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
+    nextActive = !user.isActive;
+    await prisma.user.update({ where: { id: userId }, data: { isActive: nextActive } });
+  } catch {
+    redirectWithToast(
+      `/admin/usuarios/${userId}`,
+      "error",
+      "Não foi possível atualizar o membro."
+    );
+  }
+
   revalidatePath("/admin/usuarios");
   revalidatePath(`/admin/usuarios/${userId}`);
+  redirectWithToast(
+    `/admin/usuarios/${userId}`,
+    "success",
+    nextActive ? "Membro ativado." : "Membro desativado."
+  );
 }
 
 export async function resetPasswordAction(

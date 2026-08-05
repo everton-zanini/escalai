@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
+import { ToastListener } from "@/components/toast-listener";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
@@ -44,6 +46,9 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
           <Toaster position="top-center" />
+          <Suspense fallback={null}>
+            <ToastListener />
+          </Suspense>
         </ThemeProvider>
       </body>
     </html>

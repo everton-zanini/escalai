@@ -1,10 +1,9 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToastActionState } from "@/hooks/use-toast-action-state";
 
 export interface ChangePasswordState {
   error?: string;
@@ -25,13 +24,11 @@ export function ChangePasswordForm({
   action,
   submitLabel = "Salvar nova senha",
 }: ChangePasswordFormProps) {
-  const [state, formAction, isPending] = useActionState(action, initialState);
-
-  useEffect(() => {
-    if (state.success) {
-      toast.success("Senha alterada com sucesso.");
-    }
-  }, [state.success]);
+  const [state, formAction, isPending] = useToastActionState(
+    action,
+    initialState,
+    "Senha alterada com sucesso."
+  );
 
   return (
     <form action={formAction} className="space-y-4">

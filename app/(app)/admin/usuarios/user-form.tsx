@@ -1,9 +1,9 @@
 "use client";
 
-import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToastActionState } from "@/hooks/use-toast-action-state";
 import type { FormState } from "./actions";
 
 interface UserFormProps {
@@ -19,7 +19,11 @@ export function UserForm({
   defaultValues,
   submitLabel = "Salvar",
 }: UserFormProps) {
-  const [state, formAction, isPending] = useActionState(action, initialState);
+  const [state, formAction, isPending] = useToastActionState(
+    action,
+    initialState,
+    "Membro atualizado com sucesso."
+  );
 
   return (
     <form action={formAction} className="space-y-4">

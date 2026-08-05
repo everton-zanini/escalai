@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToastActionState } from "@/hooks/use-toast-action-state";
 import type { FormState } from "./actions";
 
 interface PositionFormProps {
@@ -12,7 +13,11 @@ interface PositionFormProps {
 const initialState: FormState = {};
 
 export function PositionForm({ action }: PositionFormProps) {
-  const [state, formAction, isPending] = useActionState(action, initialState);
+  const [state, formAction, isPending] = useToastActionState(
+    action,
+    initialState,
+    "Função criada com sucesso."
+  );
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {

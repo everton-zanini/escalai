@@ -1,10 +1,10 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireDepartmentLeader } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { scheduleEntrySchema } from "@/lib/validations/schedule";
+import { redirectWithToast } from "@/lib/toast-redirect";
 
 export interface FormState {
   error?: string;
@@ -109,7 +109,7 @@ export async function createEntryAction(
   });
 
   revalidatePath(`/departamentos/${departmentId}`);
-  redirect(`/departamentos/${departmentId}`);
+  redirectWithToast(`/departamentos/${departmentId}`, "success", "Escala criada com sucesso.");
 }
 
 export async function updateEntryAction(
@@ -163,7 +163,7 @@ export async function updateEntryAction(
   ]);
 
   revalidatePath(`/departamentos/${departmentId}`);
-  redirect(`/departamentos/${departmentId}`);
+  redirectWithToast(`/departamentos/${departmentId}`, "success", "Escala atualizada com sucesso.");
 }
 
 export async function deleteEntryAction(formData: FormData) {
@@ -171,8 +171,17 @@ export async function deleteEntryAction(formData: FormData) {
   const entryId = Number(formData.get("entryId"));
 
   await requireDepartmentLeader(departmentId);
-  await prisma.scheduleEntry.delete({ where: { id: entryId } });
+
+  try {
+    await prisma.scheduleEntry.delete({ where: { id: entryId } });
+  } catch {
+    redirectWithToast(
+      `/departamentos/${departmentId}/${entryId}/editar`,
+      "error",
+      "Não foi possível excluir a escala."
+    );
+  }
 
   revalidatePath(`/departamentos/${departmentId}`);
-  redirect(`/departamentos/${departmentId}`);
+  redirectWithToast(`/departamentos/${departmentId}`, "success", "Escala excluída com sucesso.");
 }

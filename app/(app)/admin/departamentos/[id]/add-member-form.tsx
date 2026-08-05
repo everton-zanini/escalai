@@ -1,7 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
+import { useToastActionState } from "@/hooks/use-toast-action-state";
 import type { FormState } from "../actions";
 import { addMembershipAction } from "../actions";
 
@@ -13,7 +13,11 @@ interface AddMemberFormProps {
 const initialState: FormState = {};
 
 export function AddMemberForm({ departmentId, availableUsers }: AddMemberFormProps) {
-  const [state, formAction, isPending] = useActionState(addMembershipAction, initialState);
+  const [state, formAction, isPending] = useToastActionState(
+    addMembershipAction,
+    initialState,
+    "Membro adicionado ao departamento."
+  );
 
   if (availableUsers.length === 0) {
     return (

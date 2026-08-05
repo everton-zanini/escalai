@@ -1,10 +1,10 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/permissions";
 import { changeOwnPassword } from "@/lib/change-password";
 import { changePasswordSchema } from "@/lib/validations/password";
 import type { ChangePasswordState } from "@/components/account/change-password-form";
+import { redirectWithToast } from "@/lib/toast-redirect";
 
 export async function forcedChangePasswordAction(
   _prevState: ChangePasswordState,
@@ -32,5 +32,5 @@ export async function forcedChangePasswordAction(
     return { error: result.error };
   }
 
-  redirect("/");
+  redirectWithToast("/", "success", "Senha alterada com sucesso.");
 }
