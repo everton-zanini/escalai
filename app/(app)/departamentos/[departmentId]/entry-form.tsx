@@ -1,13 +1,15 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getUnavailableMembersAction } from "./actions";
 import type { FormState } from "./actions";
 
 interface EntryFormProps {
+  departmentId: number;
   action: (prevState: FormState, formData: FormData) => Promise<FormState>;
   members: { id: number; name: string }[];
   positions: { id: number; name: string }[];
@@ -24,6 +26,7 @@ interface EntryFormProps {
 const initialState: FormState = {};
 
 export function EntryForm({
+  departmentId,
   action,
   members,
   positions,
@@ -31,10 +34,23 @@ export function EntryForm({
   submitLabel = "Salvar escala",
 }: EntryFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
+  const [date, setDate] = useState(defaultValues?.date ?? "");
+  const [unavailable, setUnavailable] = useState<Map<number, string>>(new Map());
 
   useEffect(() => {
     if (state.error) toast.error(state.error);
   }, [state.error]);
+
+  useEffect(() => {
+    let cancelled = false;
+    getUnavailableMembersAction(departmentId, date).then((requests) => {
+      if (cancelled) return;
+      setUnavailable(new Map(requests.map((r) => [r.userId, r.reason])));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [departmentId, date]);
 
   const assignedPositionsByUser = new Map<number, Set<number | null>>();
   for (const a of defaultValues?.assignments ?? []) {
@@ -52,7 +68,8 @@ export function EntryForm({
           name="date"
           type="date"
           required
-          defaultValue={defaultValues?.date}
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
         />
       </div>
       <div className="space-y-2">
@@ -88,6 +105,7 @@ export function EntryForm({
           <div className="max-h-64 space-y-2 overflow-y-auto rounded-lg border p-3">
             {members.map((member) => {
               const memberPositions = assignedPositionsByUser.get(member.id);
+              const absenceReason = unavailable.get(member.id);
               return (
                 <div key={member.id} className="space-y-1 text-sm">
                   <label className="flex items-center gap-2">
@@ -95,10 +113,16 @@ export function EntryForm({
                       type="checkbox"
                       name={`assignee-${member.id}`}
                       defaultChecked={memberPositions !== undefined}
+                      disabled={absenceReason !== undefined}
                       className="size-4 rounded border-input"
                     />
                     {member.name}
                   </label>
+                  {absenceReason && (
+                    <p className="pl-6 text-xs text-destructive">
+                      Ausência justificada: {absenceReason}
+                    </p>
+                  )}
                   {positions.length > 0 && (
                     <div className="flex flex-wrap gap-x-3 gap-y-1 pl-6">
                       {positions.map((position) => (

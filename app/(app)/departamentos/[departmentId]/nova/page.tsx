@@ -37,6 +37,7 @@ export default async function NovaEscalaPage({
         </CardHeader>
         <CardContent>
           <EntryForm
+            departmentId={departmentId}
             action={boundAction}
             members={memberships.map((m) => ({ id: m.userId, name: m.user.name }))}
             positions={positions}

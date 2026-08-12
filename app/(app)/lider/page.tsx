@@ -5,6 +5,7 @@ import { ScheduleEntryCard } from "@/components/schedule/schedule-entry-card";
 import { EmptyState } from "@/components/schedule/empty-state";
 import { DateDayNav } from "@/components/schedule/date-day-nav";
 import { DepartmentColorDot } from "@/components/schedule/department-color-dot";
+import { PendingRequestList } from "@/components/availability/pending-request-list";
 import { CalendarDays } from "lucide-react";
 import type { Prisma } from "@prisma/client";
 
@@ -31,9 +32,19 @@ export default async function LiderPage({
     orderBy: [{ time: { sort: "asc", nulls: "last" } }, { department: { name: "asc" } }],
   });
 
+  const pendingRequests = await prisma.availabilityRequest.findMany({
+    where: user.isAdmin
+      ? { status: "PENDENTE" }
+      : { status: "PENDENTE", departmentId: { in: ledDepartmentIds } },
+    include: { user: true, department: true },
+    orderBy: { date: "asc" },
+  });
+
   return (
     <div className="mx-auto w-full max-w-sm space-y-3 p-4">
       <h1 className="text-lg font-semibold">Escala do dia</h1>
+
+      {pendingRequests.length > 0 && <PendingRequestList requests={pendingRequests} />}
 
       <DateDayNav date={selectedDate} basePath="/lider" />
 

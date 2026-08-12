@@ -36,6 +36,34 @@ async function buildAssignments(departmentId: number, formData: FormData) {
   return assignments;
 }
 
+export async function getUnavailableMembersAction(departmentId: number, date: string) {
+  await requireDepartmentLeader(departmentId);
+
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
+  if (!match) return [];
+
+  const [, year, month, day] = match;
+  const parsedDate = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+
+  return prisma.availabilityRequest.findMany({
+    where: { departmentId, date: parsedDate, status: "APROVADA" },
+    select: { userId: true, reason: true },
+  });
+}
+
+async function findApprovedAbsenceConflict(departmentId: number, userIds: number[], date: Date) {
+  if (userIds.length === 0) return null;
+
+  const conflict = await prisma.availabilityRequest.findFirst({
+    where: { departmentId, date, status: "APROVADA", userId: { in: userIds } },
+    include: { user: true },
+  });
+
+  if (!conflict) return null;
+
+  return `${conflict.user.name} está com ausência justificada nesse dia e não pode ser escalado(a).`;
+}
+
 async function findCrossDepartmentConflict(
   departmentId: number,
   userIds: number[],
@@ -82,11 +110,14 @@ export async function createEntryAction(
   }
 
   const date = new Date(parsed.data.date);
-  const conflictError = await findCrossDepartmentConflict(
-    departmentId,
-    parsed.data.assignments.map((a) => a.userId),
-    date
-  );
+  const assignedUserIds = parsed.data.assignments.map((a) => a.userId);
+
+  const absenceError = await findApprovedAbsenceConflict(departmentId, assignedUserIds, date);
+  if (absenceError) {
+    return { error: absenceError };
+  }
+
+  const conflictError = await findCrossDepartmentConflict(departmentId, assignedUserIds, date);
   if (conflictError) {
     return { error: conflictError };
   }
@@ -133,9 +164,16 @@ export async function updateEntryAction(
   }
 
   const date = new Date(parsed.data.date);
+  const assignedUserIds = parsed.data.assignments.map((a) => a.userId);
+
+  const absenceError = await findApprovedAbsenceConflict(departmentId, assignedUserIds, date);
+  if (absenceError) {
+    return { error: absenceError };
+  }
+
   const conflictError = await findCrossDepartmentConflict(
     departmentId,
-    parsed.data.assignments.map((a) => a.userId),
+    assignedUserIds,
     date,
     entryId
   );

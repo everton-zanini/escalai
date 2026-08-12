@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Home, CalendarDays, User, ShieldCheck, Users } from "lucide-react";
+import { Home, CalendarDays, CalendarOff, User, ShieldCheck, Users } from "lucide-react";
 
 interface DesktopNavProps {
   isAdmin: boolean;
@@ -13,6 +13,7 @@ interface DesktopNavProps {
 const baseItems = [
   { href: "/", label: "Início", icon: Home },
   { href: "/departamentos", label: "Escalas", icon: CalendarDays },
+  { href: "/indisponibilidades", label: "Ausências", icon: CalendarOff },
   { href: "/perfil", label: "Perfil", icon: User },
 ];
 

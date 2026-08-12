@@ -43,6 +43,7 @@ export default async function EditarEscalaPage({
         </CardHeader>
         <CardContent>
           <EntryForm
+            departmentId={departmentId}
             action={boundUpdate}
             members={memberships.map((m) => ({ id: m.userId, name: m.user.name }))}
             positions={positions}

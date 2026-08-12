@@ -13,6 +13,12 @@ enum DepartmentRole {
   MEMBRO
 }
 
+enum AvailabilityRequestStatus {
+  PENDENTE
+  APROVADA
+  RECUSADA
+}
+
 model User {
   id                 Int      @id @default(autoincrement())
   name               String   @db.Text
@@ -24,9 +30,11 @@ model User {
   createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt          DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  memberships    DepartmentMembership[]
-  createdEntries ScheduleEntry[]        @relation("EntryCreatedBy")
-  assignments    ScheduleAssignment[]
+  memberships                  DepartmentMembership[]
+  createdEntries               ScheduleEntry[]        @relation("EntryCreatedBy")
+  assignments                  ScheduleAssignment[]
+  availabilityRequests         AvailabilityRequest[]  @relation("AvailabilityRequestUser")
+  reviewedAvailabilityRequests AvailabilityRequest[]  @relation("AvailabilityRequestReviewer")
 
   @@map("users")
 }
@@ -40,9 +48,10 @@ model Department {
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  memberships DepartmentMembership[]
-  entries     ScheduleEntry[]
-  positions   Position[]
+  memberships          DepartmentMembership[]
+  entries              ScheduleEntry[]
+  positions            Position[]
+  availabilityRequests AvailabilityRequest[]
 
   @@map("departments")
 }
@@ -109,4 +118,25 @@ model ScheduleAssignment {
   @@index([userId])
   @@index([positionId])
   @@map("schedule_assignments")
+}
+
+model AvailabilityRequest {
+  id           Int                       @id @default(autoincrement())
+  userId       Int                       @map("user_id")
+  departmentId Int                       @map("department_id")
+  date         DateTime                  @db.Date
+  reason       String                    @db.Text
+  status       AvailabilityRequestStatus @default(PENDENTE)
+  reviewedById Int?                      @map("reviewed_by_id")
+  reviewedAt   DateTime?                 @map("reviewed_at") @db.Timestamptz(6)
+  createdAt    DateTime                  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime                  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user       User       @relation("AvailabilityRequestUser", fields: [userId], references: [id], onDelete: Cascade)
+  department Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  reviewedBy User?      @relation("AvailabilityRequestReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+
+  @@index([departmentId, date])
+  @@index([userId])
+  @@map("availability_requests")
 }
