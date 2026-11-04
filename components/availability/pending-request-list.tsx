@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { FormPendingOverlay } from "@/components/loading-overlay";
 import { DepartmentColorDot } from "@/components/schedule/department-color-dot";
 import { formatDatePtBR } from "@/lib/utils";
 import { reviewAvailabilityRequestAction } from "@/app/(app)/lider/actions";
@@ -35,6 +36,7 @@ export function PendingRequestList({ requests }: PendingRequestListProps) {
                 action={reviewAvailabilityRequestAction.bind(null, request.id, "APROVADA")}
                 className="flex-1"
               >
+                <FormPendingOverlay message="Aprovando..." />
                 <Button type="submit" size="sm" className="w-full">
                   Aceitar
                 </Button>
@@ -43,6 +45,7 @@ export function PendingRequestList({ requests }: PendingRequestListProps) {
                 action={reviewAvailabilityRequestAction.bind(null, request.id, "RECUSADA")}
                 className="flex-1"
               >
+                <FormPendingOverlay message="Recusando..." />
                 <Button type="submit" variant="destructive" size="sm" className="w-full">
                   Recusar
                 </Button>

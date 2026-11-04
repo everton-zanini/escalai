@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { FormPendingOverlay } from "@/components/loading-overlay";
 import { Separator } from "@/components/ui/separator";
 import { UserForm } from "../user-form";
 import { ResetPasswordForm } from "./reset-password-form";
@@ -34,6 +35,7 @@ export default async function UsuarioDetalhePage({
             {user.isAdmin && <Badge>Admin</Badge>}
             {!user.isActive && <Badge variant="secondary">Inativo</Badge>}
             <form action={toggleUserActiveAction}>
+              <FormPendingOverlay message="Atualizando..." />
               <input type="hidden" name="userId" value={userId} />
               <Button type="submit" variant="outline" size="sm">
                 {user.isActive ? "Desativar" : "Ativar"}

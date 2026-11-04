@@ -16,7 +16,7 @@ export default async function AdminDepartamentosPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold">Departamentos</h1>
+        <h1 className="text-2xl font-semibold">Departamentos</h1>
         <Button nativeButton={false} render={<Link href="/admin/departamentos/novo" />}>
           <Plus className="size-4" />
           Novo
@@ -28,9 +28,16 @@ export default async function AdminDepartamentosPage() {
       ) : (
         <div className="space-y-2">
           {departments.map((department) => (
-            <Link key={department.id} href={`/admin/departamentos/${department.id}`}>
-              <Card>
-                <CardContent className="flex items-center justify-between py-4">
+            <Link
+              key={department.id}
+              href={`/admin/departamentos/${department.id}`}
+              className="block rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <Card
+                className="border-l-4 transition-shadow hover:shadow-md"
+                style={{ borderLeftColor: department.color }}
+              >
+                <CardContent className="flex items-center justify-between py-1">
                   <div>
                     <p className="flex items-center gap-2 font-medium">
                       <DepartmentColorDot color={department.color} />

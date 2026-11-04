@@ -6,6 +6,7 @@ import { formatDatePtBR } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { FormPendingOverlay } from "@/components/loading-overlay";
 import { EmptyState } from "@/components/schedule/empty-state";
 import { DepartmentColorDot } from "@/components/schedule/department-color-dot";
 import { deleteAvailabilityRequestAction } from "./actions";
@@ -32,9 +33,9 @@ export default async function IndisponibilidadesPage() {
   });
 
   return (
-    <div className="mx-auto w-full max-w-sm space-y-3 p-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold">Ausências</h1>
+    <div className="mx-auto w-full max-w-sm space-y-4 p-4 md:max-w-2xl">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h1 className="text-2xl font-semibold">Ausências</h1>
         <Button size="sm" nativeButton={false} render={<Link href="/indisponibilidades/nova" />}>
           <Plus className="size-4" />
           Nova solicitação
@@ -48,9 +49,13 @@ export default async function IndisponibilidadesPage() {
           description="Informe os dias em que não poderá servir e o líder do departamento poderá aprovar."
         />
       ) : (
-        <div className="space-y-3">
+        <div className="grid gap-3 md:grid-cols-2">
           {requests.map((request) => (
-            <Card key={request.id}>
+            <Card
+              key={request.id}
+              className="border-l-4"
+              style={{ borderLeftColor: request.department.color }}
+            >
               <CardHeader className="flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="flex items-center gap-2 text-base capitalize">
                   <DepartmentColorDot color={request.department.color} />
@@ -65,6 +70,7 @@ export default async function IndisponibilidadesPage() {
                 <p>{request.reason}</p>
                 {request.status === "PENDENTE" && (
                   <form action={deleteAvailabilityRequestAction}>
+                    <FormPendingOverlay message="Cancelando..." />
                     <input type="hidden" name="requestId" value={request.id} />
                     <Button type="submit" variant="destructive" size="sm">
                       Cancelar solicitação

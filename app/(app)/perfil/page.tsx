@@ -8,7 +8,7 @@ export default async function PerfilPage() {
   const user = await requireUser();
 
   return (
-    <div className="mx-auto w-full max-w-sm space-y-4 p-4">
+    <div className="mx-auto w-full max-w-sm space-y-4 p-4 md:max-w-2xl">
       <Card>
         <CardHeader>
           <CardTitle>{user.name}</CardTitle>

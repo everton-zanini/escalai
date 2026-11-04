@@ -3,6 +3,7 @@ import { requireDepartmentLeader } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { FormPendingOverlay } from "@/components/loading-overlay";
 import { EntryForm } from "../../entry-form";
 import { updateEntryAction, deleteEntryAction } from "../../actions";
 
@@ -36,7 +37,7 @@ export default async function EditarEscalaPage({
   const boundUpdate = updateEntryAction.bind(null, departmentId, entryId);
 
   return (
-    <div className="mx-auto w-full max-w-sm space-y-4 p-4">
+    <div className="mx-auto w-full max-w-sm space-y-4 p-4 md:max-w-2xl">
       <Card>
         <CardHeader>
           <CardTitle>Editar escala · {department.name}</CardTitle>
@@ -68,6 +69,7 @@ export default async function EditarEscalaPage({
             Excluir esta escala remove o registro e todos os escalados desse dia.
           </p>
           <form action={deleteEntryAction}>
+            <FormPendingOverlay message="Excluindo..." />
             <input type="hidden" name="departmentId" value={departmentId} />
             <input type="hidden" name="entryId" value={entryId} />
             <Button type="submit" variant="destructive" className="w-full">

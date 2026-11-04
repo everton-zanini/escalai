@@ -15,7 +15,7 @@ export default async function TrocarSenhaObrigatoriaPage() {
   }
 
   return (
-    <main className="flex min-h-full flex-1 items-center justify-center px-4 py-12">
+    <main className="flex min-h-full flex-1 items-center justify-center bg-gradient-to-b from-primary/10 via-background to-background px-4 py-12">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Defina uma nova senha</CardTitle>

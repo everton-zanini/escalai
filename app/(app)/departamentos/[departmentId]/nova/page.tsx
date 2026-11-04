@@ -30,7 +30,7 @@ export default async function NovaEscalaPage({
   const boundAction = createEntryAction.bind(null, departmentId);
 
   return (
-    <div className="mx-auto w-full max-w-sm p-4">
+    <div className="mx-auto w-full max-w-sm p-4 md:max-w-2xl">
       <Card>
         <CardHeader>
           <CardTitle>Nova escala · {department.name}</CardTitle>

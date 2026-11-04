@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { requireAdmin } from "@/lib/permissions";
+import { AdminTabs } from "@/components/shell/admin-tabs";
 
 export default async function AdminLayout({
   children,
@@ -10,11 +10,7 @@ export default async function AdminLayout({
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-4 p-4">
-      <nav className="flex gap-4 border-b pb-2 text-sm font-medium">
-        <Link href="/admin">Painel</Link>
-        <Link href="/admin/departamentos">Departamentos</Link>
-        <Link href="/admin/usuarios">Membros</Link>
-      </nav>
+      <AdminTabs />
       {children}
     </div>
   );

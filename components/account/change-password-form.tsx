@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { FormPendingOverlay } from "@/components/loading-overlay";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToastActionState } from "@/hooks/use-toast-action-state";
@@ -67,6 +68,7 @@ export function ChangePasswordForm({
           {state.error}
         </p>
       )}
+      <FormPendingOverlay />
       <Button type="submit" className="w-full" size="lg" disabled={isPending}>
         {isPending ? "Salvando..." : submitLabel}
       </Button>

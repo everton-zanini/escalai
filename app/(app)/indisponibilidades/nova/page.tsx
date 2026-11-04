@@ -16,7 +16,7 @@ export default async function NovaIndisponibilidadePage() {
   });
 
   return (
-    <div className="mx-auto w-full max-w-sm p-4">
+    <div className="mx-auto w-full max-w-sm p-4 md:max-w-2xl">
       <Card>
         <CardHeader>
           <CardTitle>Nova solicitação de ausência</CardTitle>

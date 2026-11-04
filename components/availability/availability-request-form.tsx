@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { FormPendingOverlay } from "@/components/loading-overlay";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { FormState } from "@/app/(app)/indisponibilidades/actions";
@@ -63,7 +64,8 @@ export function AvailabilityRequestForm({ action, departments }: AvailabilityReq
           {state.error}
         </p>
       )}
-      <Button type="submit" className="w-full" disabled={isPending}>
+      <FormPendingOverlay message="Enviando..." />
+      <Button type="submit" className="w-full" size="lg" disabled={isPending}>
         {isPending ? "Enviando..." : "Enviar solicitação"}
       </Button>
     </form>

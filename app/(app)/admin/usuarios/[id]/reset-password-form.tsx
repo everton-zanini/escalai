@@ -3,6 +3,7 @@
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { FormPendingOverlay } from "@/components/loading-overlay";
 import { resetPasswordAction, type ResetPasswordState } from "../actions";
 
 interface ResetPasswordFormProps {
@@ -23,6 +24,7 @@ export function ResetPasswordForm({ userId }: ResetPasswordFormProps) {
     <div className="space-y-3">
       <form action={formAction}>
         <input type="hidden" name="userId" value={userId} />
+        <FormPendingOverlay message="Gerando senha..." />
         <Button type="submit" variant="outline" disabled={isPending}>
           {isPending ? "Gerando..." : "Redefinir senha"}
         </Button>

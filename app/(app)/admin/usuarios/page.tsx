@@ -15,7 +15,7 @@ export default async function AdminUsuariosPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold">Membros</h1>
+        <h1 className="text-2xl font-semibold">Membros</h1>
         <Button nativeButton={false} render={<Link href="/admin/usuarios/novo" />}>
           <Plus className="size-4" />
           Novo
@@ -27,9 +27,13 @@ export default async function AdminUsuariosPage() {
       ) : (
         <div className="space-y-2">
           {users.map((user) => (
-            <Link key={user.id} href={`/admin/usuarios/${user.id}`}>
-              <Card>
-                <CardContent className="flex items-center justify-between py-4">
+            <Link
+              key={user.id}
+              href={`/admin/usuarios/${user.id}`}
+              className="block rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <Card className="transition-shadow hover:shadow-md">
+                <CardContent className="flex items-center justify-between py-1">
                   <div>
                     <p className="font-medium">{user.name}</p>
                     <p className="text-sm text-muted-foreground">{user.email}</p>

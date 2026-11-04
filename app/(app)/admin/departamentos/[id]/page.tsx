@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { FormPendingOverlay } from "@/components/loading-overlay";
 import { Separator } from "@/components/ui/separator";
 import { DepartmentForm } from "../department-form";
 import { AddMemberForm } from "./add-member-form";
@@ -52,6 +53,7 @@ export default async function DepartamentoDetalhePage({
           <div className="flex items-center gap-2">
             {!department.isActive && <Badge variant="secondary">Inativo</Badge>}
             <form action={toggleDepartmentActiveAction}>
+              <FormPendingOverlay message="Atualizando..." />
               <input type="hidden" name="departmentId" value={departmentId} />
               <Button type="submit" variant="outline" size="sm">
                 {department.isActive ? "Desativar" : "Ativar"}
@@ -102,6 +104,7 @@ export default async function DepartamentoDetalhePage({
                       {membership.role === "LIDER" ? "Líder" : "Membro"}
                     </Badge>
                     <form action={toggleMembershipRoleAction}>
+                      <FormPendingOverlay message="Atualizando..." />
                       <input type="hidden" name="membershipId" value={membership.id} />
                       <input type="hidden" name="departmentId" value={departmentId} />
                       <input
@@ -114,6 +117,7 @@ export default async function DepartamentoDetalhePage({
                       </Button>
                     </form>
                     <form action={removeMembershipAction}>
+                      <FormPendingOverlay message="Removendo..." />
                       <input type="hidden" name="membershipId" value={membership.id} />
                       <input type="hidden" name="departmentId" value={departmentId} />
                       <Button type="submit" variant="destructive" size="sm">

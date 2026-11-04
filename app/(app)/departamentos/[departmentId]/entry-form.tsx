@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { FormPendingOverlay } from "@/components/loading-overlay";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getUnavailableMembersAction } from "./actions";
@@ -150,7 +151,8 @@ export function EntryForm({
           {state.error}
         </p>
       )}
-      <Button type="submit" className="w-full" disabled={isPending}>
+      <FormPendingOverlay />
+      <Button type="submit" className="w-full" size="lg" disabled={isPending}>
         {isPending ? "Salvando..." : submitLabel}
       </Button>
     </form>

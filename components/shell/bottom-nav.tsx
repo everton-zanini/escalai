@@ -17,8 +17,6 @@ const baseItems = [
   { href: "/perfil", label: "Perfil", icon: User },
 ];
 
-const GRID_COLS = ["grid-cols-3", "grid-cols-4", "grid-cols-5", "grid-cols-6"];
-
 export function BottomNav({ isAdmin, isLeader }: BottomNavProps) {
   const pathname = usePathname();
   const items = [
@@ -28,8 +26,11 @@ export function BottomNav({ isAdmin, isLeader }: BottomNavProps) {
   ];
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 border-t bg-background pb-[env(safe-area-inset-bottom)] md:hidden">
-      <ul className={cn("grid", GRID_COLS[items.length - 3])}>
+    <nav className="fixed inset-x-0 bottom-0 z-50 border-t bg-background/90 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden">
+      <ul
+        className="grid px-2 py-1"
+        style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))` }}
+      >
         {items.map(({ href, label, icon: Icon }) => {
           const isActive =
             href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -37,9 +38,12 @@ export function BottomNav({ isAdmin, isLeader }: BottomNavProps) {
             <li key={href}>
               <Link
                 href={href}
+                aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "flex flex-col items-center gap-1 py-2.5 text-xs",
-                  isActive ? "text-primary" : "text-muted-foreground"
+                  "flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-xl px-1 text-xs transition-colors",
+                  isActive
+                    ? "bg-primary/10 font-semibold text-primary"
+                    : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 <Icon className="size-5" />

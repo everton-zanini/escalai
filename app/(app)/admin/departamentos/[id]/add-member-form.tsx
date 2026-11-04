@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { FormPendingOverlay } from "@/components/loading-overlay";
 import { useToastActionState } from "@/hooks/use-toast-action-state";
 import type { FormState } from "../actions";
 import { addMembershipAction } from "../actions";
@@ -50,6 +51,7 @@ export function AddMemberForm({ departmentId, availableUsers }: AddMemberFormPro
         <option value="MEMBRO">Membro</option>
         <option value="LIDER">Líder</option>
       </select>
+      <FormPendingOverlay message="Adicionando..." />
       <Button type="submit" disabled={isPending}>
         {isPending ? "Adicionando..." : "Adicionar"}
       </Button>

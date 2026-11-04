@@ -41,8 +41,8 @@ export default async function LiderPage({
   });
 
   return (
-    <div className="mx-auto w-full max-w-sm space-y-3 p-4">
-      <h1 className="text-lg font-semibold">Escala do dia</h1>
+    <div className="mx-auto w-full max-w-sm space-y-4 p-4 md:max-w-2xl">
+      <h1 className="text-2xl font-semibold">Escala do dia</h1>
 
       {pendingRequests.length > 0 && <PendingRequestList requests={pendingRequests} />}
 
@@ -67,6 +67,7 @@ export default async function LiderPage({
                   entry={entry}
                   departmentId={entry.departmentId}
                   canManage={canManage}
+                  color={entry.department.color}
                 />
               </div>
             );

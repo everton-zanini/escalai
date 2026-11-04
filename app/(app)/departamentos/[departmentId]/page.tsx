@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { ScheduleEntryCard } from "@/components/schedule/schedule-entry-card";
 import { EmptyState } from "@/components/schedule/empty-state";
+import { LinkPendingOverlay } from "@/components/loading-overlay";
 import { getPeriodRange, type SchedulePeriod } from "@/lib/utils";
 import { CalendarDays, ListTree, Plus } from "lucide-react";
 
@@ -53,9 +54,9 @@ export default async function DepartamentoEscalaPage({
   const canManage = user.isAdmin || roleClaim?.role === "LIDER";
 
   return (
-    <div className="mx-auto w-full max-w-sm space-y-3 p-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold">{department.name}</h1>
+    <div className="mx-auto w-full max-w-sm space-y-4 p-4 md:max-w-2xl">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h1 className="text-2xl font-semibold">{department.name}</h1>
         {canManage && (
           <div className="flex gap-2">
             <Button
@@ -89,6 +90,7 @@ export default async function DepartamentoEscalaPage({
             render={<Link href={`/departamentos/${departmentId}?periodo=${option.value}`} />}
           >
             {option.label}
+            <LinkPendingOverlay />
           </Button>
         ))}
       </div>
@@ -106,6 +108,7 @@ export default async function DepartamentoEscalaPage({
               entry={entry}
               departmentId={departmentId}
               canManage={canManage}
+              color={department.color}
             />
           ))}
         </div>

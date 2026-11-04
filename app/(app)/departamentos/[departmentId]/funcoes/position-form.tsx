@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { FormPendingOverlay } from "@/components/loading-overlay";
 import { Input } from "@/components/ui/input";
 import { useToastActionState } from "@/hooks/use-toast-action-state";
 import type { FormState } from "./actions";
@@ -36,6 +37,7 @@ export function PositionForm({ action }: PositionFormProps) {
           </p>
         )}
       </div>
+      <FormPendingOverlay message="Adicionando..." />
       <Button type="submit" disabled={isPending}>
         {isPending ? "Adicionando..." : "Adicionar"}
       </Button>

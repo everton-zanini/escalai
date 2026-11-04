@@ -3,6 +3,7 @@ import { requireDepartmentLeader } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { FormPendingOverlay } from "@/components/loading-overlay";
 import { PositionForm } from "./position-form";
 import { createPositionAction, deletePositionAction } from "./actions";
 
@@ -27,7 +28,7 @@ export default async function FuncoesPage({
   const boundCreate = createPositionAction.bind(null, departmentId);
 
   return (
-    <div className="mx-auto w-full max-w-sm space-y-4 p-4">
+    <div className="mx-auto w-full max-w-sm space-y-4 p-4 md:max-w-2xl">
       <Card>
         <CardHeader>
           <CardTitle>Funções · {department.name}</CardTitle>
@@ -48,6 +49,7 @@ export default async function FuncoesPage({
                 >
                   <span className="text-sm font-medium">{position.name}</span>
                   <form action={deletePositionAction}>
+                    <FormPendingOverlay message="Removendo..." />
                     <input type="hidden" name="departmentId" value={departmentId} />
                     <input type="hidden" name="positionId" value={position.id} />
                     <Button type="submit" variant="destructive" size="sm">
