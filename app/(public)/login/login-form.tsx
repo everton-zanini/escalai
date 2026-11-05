@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useState } from "react";
 import { AlertCircle, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -63,6 +64,12 @@ export function LoginForm() {
       <Button type="submit" className="w-full" size="lg" disabled={isPending}>
         {isPending ? "Entrando..." : "Entrar"}
       </Button>
+      <Link
+        href="/esqueci-senha"
+        className="block text-center text-sm text-muted-foreground hover:underline"
+      >
+        Esqueci minha senha
+      </Link>
     </form>
   );
 }

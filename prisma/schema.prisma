@@ -35,8 +35,23 @@ model User {
   assignments                  ScheduleAssignment[]
   availabilityRequests         AvailabilityRequest[]  @relation("AvailabilityRequestUser")
   reviewedAvailabilityRequests AvailabilityRequest[]  @relation("AvailabilityRequestReviewer")
+  passwordResetTokens          PasswordResetToken[]
 
   @@map("users")
+}
+
+model PasswordResetToken {
+  id        Int       @id @default(autoincrement())
+  userId    Int       @map("user_id")
+  tokenHash String    @unique @map("token_hash") @db.Text
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz(6)
+  usedAt    DateTime? @map("used_at") @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_reset_tokens")
 }
 
 model Department {

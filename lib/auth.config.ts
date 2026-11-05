@@ -8,10 +8,12 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request }) {
       const isLoggedIn = !!auth?.user;
-      const isOnLogin = request.nextUrl.pathname === "/login";
+      const isOnPublicAuthPage = ["/login", "/esqueci-senha", "/redefinir-senha"].includes(
+        request.nextUrl.pathname
+      );
       const isOnAdmin = request.nextUrl.pathname.startsWith("/admin");
 
-      if (isOnLogin) {
+      if (isOnPublicAuthPage) {
         return true;
       }
 
