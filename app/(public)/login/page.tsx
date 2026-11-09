@@ -15,7 +15,7 @@ export default async function LoginPage() {
       <Card className="w-full max-w-sm">
         <CardHeader className="items-center justify-items-center text-center">
           <Image
-            src="/escalai_icon.png"
+            src="/escalai_icon.svg"
             alt=""
             width={64}
             height={64}

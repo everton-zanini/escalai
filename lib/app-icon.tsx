@@ -1,17 +1,31 @@
-import fs from "fs";
-import path from "path";
 import { ImageResponse } from "next/og";
 
-const iconDataUri = `data:image/png;base64,${fs
-  .readFileSync(path.join(process.cwd(), "public", "escalai_icon.png"))
-  .toString("base64")}`;
+const BACKGROUND = "#b45309";
+const FOREGROUND = "#fffdf8";
+const MASKABLE_SCALE = 0.7;
+const ROUNDED_SCALE = 0.22;
 
-const MASKABLE_BACKGROUND = "#1d4ed8";
-const MASKABLE_SCALE = 0.8;
+function Calendar({ size }: { size: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke={FOREGROUND}
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="2.5" y="3.5" width="11" height="10" rx="2" />
+      <path d="M2.5 7h11M5.5 2v3M10.5 2v3" />
+    </svg>
+  );
+}
 
 export function renderAppIcon(size: number, maskable: boolean) {
   return new ImageResponse(
-    maskable ? (
+    (
       <div
         style={{
           width: "100%",
@@ -19,19 +33,12 @@ export function renderAppIcon(size: number, maskable: boolean) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: MASKABLE_BACKGROUND,
+          background: BACKGROUND,
+          borderRadius: maskable ? 0 : size * ROUNDED_SCALE,
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={iconDataUri}
-          width={size * MASKABLE_SCALE}
-          height={size * MASKABLE_SCALE}
-        />
+        <Calendar size={size * (maskable ? MASKABLE_SCALE * 0.8 : 0.75)} />
       </div>
-    ) : (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img src={iconDataUri} width={size} height={size} />
     ),
     { width: size, height: size }
   );
