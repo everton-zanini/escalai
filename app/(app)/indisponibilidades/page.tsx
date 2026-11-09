@@ -10,6 +10,7 @@ import { FormPendingOverlay } from "@/components/loading-overlay";
 import { EmptyState } from "@/components/schedule/empty-state";
 import { DepartmentColorDot } from "@/components/schedule/department-color-dot";
 import { deleteAvailabilityRequestAction } from "./actions";
+import { LinkPendingOverlay } from "@/components/loading-overlay";
 
 const STATUS_LABEL = {
   PENDENTE: "Pendente",
@@ -39,7 +40,7 @@ export default async function IndisponibilidadesPage() {
         <Button size="sm" nativeButton={false} render={<Link href="/indisponibilidades/nova" />}>
           <Plus className="size-4" />
           Nova solicitação
-        </Button>
+        <LinkPendingOverlay /></Button>
       </div>
 
       {requests.length === 0 ? (

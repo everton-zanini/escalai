@@ -3,6 +3,7 @@ import { Building2, CalendarDays, Users } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/permissions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LinkPendingOverlay } from "@/components/loading-overlay";
 
 export default async function AdminDashboardPage() {
   const { churchId } = await requireAdmin();
@@ -37,7 +38,7 @@ export default async function AdminDashboardPage() {
               </CardHeader>
               <CardContent className="text-sm text-muted-foreground">{label}</CardContent>
             </Card>
-          </Link>
+          <LinkPendingOverlay /></Link>
         ))}
       </div>
     </div>

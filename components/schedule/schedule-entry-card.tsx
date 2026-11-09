@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { AssigneeAvatars } from "@/components/schedule/assignee-avatars";
 import { formatDatePtBR } from "@/lib/utils";
 import { Pencil } from "lucide-react";
+import { LinkPendingOverlay } from "@/components/loading-overlay";
 
 interface ScheduleEntryCardProps {
   entry: {
@@ -51,6 +52,7 @@ export function ScheduleEntryCard({ entry, departmentId, canManage, color }: Sch
             }
           >
             <Pencil className="size-4" />
+            <LinkPendingOverlay />
           </Button>
         )}
       </CardHeader>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useLinkStatus } from "next/link";
-import { useFormStatus } from "react-dom";
+import { createPortal, useFormStatus } from "react-dom";
 import { Loader2 } from "lucide-react";
 
 interface LoadingOverlayProps {
@@ -35,7 +35,10 @@ export function FormPendingOverlay({ message = "Salvando..." }: { message?: stri
 }
 
 // Place inside a <Link>: shows while that navigation is pending.
+// Rendered in a portal: the nav bars use backdrop-blur, which would otherwise
+// trap a fixed overlay inside the bar.
 export function LinkPendingOverlay({ message = "Carregando..." }: { message?: string }) {
   const { pending } = useLinkStatus();
-  return <LoadingOverlay show={pending} message={message} />;
+  if (!pending) return null;
+  return createPortal(<LoadingOverlay message={message} />, document.body);
 }

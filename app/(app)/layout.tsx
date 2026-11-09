@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/permissions";
-import { prisma } from "@/lib/prisma";
 import { Header } from "@/components/shell/header";
 import { BottomNav } from "@/components/shell/bottom-nav";
 
@@ -11,11 +10,9 @@ export default async function AppLayout({
 }) {
   const user = await requireUser();
 
-  // The JWT's mustChangePassword claim is a snapshot from login time, so it
-  // goes stale the moment the password is actually changed. Re-check the DB
-  // here instead of trusting the token, otherwise this redirect loops forever.
-  const dbUser = await prisma.user.findUniqueOrThrow({ where: { id: Number(user.id) } });
-  if (dbUser.mustChangePassword) {
+  // The JWT's mustChangePassword claim is a snapshot from login time, so use the
+  // DB value that requireUser already loaded (no second query).
+  if (user.mustChangePassword) {
     redirect("/trocar-senha");
   }
 

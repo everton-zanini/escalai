@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/schedule/empty-state";
 import { Users, Plus } from "lucide-react";
+import { LinkPendingOverlay } from "@/components/loading-overlay";
 
 export default async function AdminUsuariosPage() {
   const admin = await requireAdmin();
@@ -23,7 +24,7 @@ export default async function AdminUsuariosPage() {
         <Button nativeButton={false} render={<Link href="/admin/usuarios/novo" />}>
           <Plus className="size-4" />
           Novo
-        </Button>
+        <LinkPendingOverlay /></Button>
       </div>
 
       {users.length === 0 ? (
@@ -48,7 +49,7 @@ export default async function AdminUsuariosPage() {
                   </div>
                 </CardContent>
               </Card>
-            </Link>
+            <LinkPendingOverlay /></Link>
           ))}
         </div>
       )}

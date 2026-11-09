@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/schedule/empty-state";
 import { DepartmentColorDot } from "@/components/schedule/department-color-dot";
 import { MonthOverviewCalendar } from "@/components/schedule/month-overview-calendar";
+import { LinkPendingOverlay } from "@/components/loading-overlay";
 
 function dayLabel(date: Date, todayUtc: Date) {
   const diffDays = Math.round((date.getTime() - todayUtc.getTime()) / 86_400_000);
@@ -111,7 +112,7 @@ export default async function InicioPage() {
               render={<Link href="/departamentos" />}
             >
               Ver departamentos
-            </Button>
+            <LinkPendingOverlay /></Button>
           }
         />
       ) : (
@@ -153,7 +154,7 @@ export default async function InicioPage() {
                 </CardContent>
               )}
             </Card>
-          </Link>
+          <LinkPendingOverlay /></Link>
         ))}
             </div>
           </div>

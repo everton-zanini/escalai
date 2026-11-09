@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Home, CalendarDays, CalendarOff, User, ShieldCheck, Users, Church } from "lucide-react";
+import { LinkPendingOverlay } from "@/components/loading-overlay";
 
 interface BottomNavProps {
   isAdmin: boolean;
@@ -50,7 +51,7 @@ export function BottomNav({ isAdmin, isSuperAdmin, isLeader }: BottomNavProps) {
               >
                 <Icon className="size-5" />
                 {label}
-              </Link>
+              <LinkPendingOverlay /></Link>
             </li>
           );
         })}

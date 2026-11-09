@@ -16,6 +16,7 @@ export async function requireUser() {
     select: {
       isAdmin: true,
       isSuperAdmin: true,
+      mustChangePassword: true,
       churchId: true,
       church: { select: { status: true, expiresAt: true } },
     },
@@ -33,6 +34,7 @@ export async function requireUser() {
     ...session.user,
     isAdmin: dbUser.isAdmin,
     isSuperAdmin: dbUser.isSuperAdmin,
+    mustChangePassword: dbUser.mustChangePassword,
     churchId: dbUser.churchId,
   };
 }

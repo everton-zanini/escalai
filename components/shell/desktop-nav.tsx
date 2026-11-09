@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Home, CalendarDays, CalendarOff, User, ShieldCheck, Users, Church } from "lucide-react";
+import { LinkPendingOverlay } from "@/components/loading-overlay";
 
 interface DesktopNavProps {
   isAdmin: boolean;
@@ -46,7 +47,7 @@ export function DesktopNav({ isAdmin, isSuperAdmin, isLeader }: DesktopNavProps)
           >
             <Icon className="size-4" />
             {label}
-          </Link>
+          <LinkPendingOverlay /></Link>
         );
       })}
     </nav>

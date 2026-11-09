@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/schedule/empty-state";
 import { Church, Plus } from "lucide-react";
+import { LinkPendingOverlay } from "@/components/loading-overlay";
 
 export default async function SuperAdminPage() {
   const churches = await prisma.church.findMany({
@@ -20,7 +21,7 @@ export default async function SuperAdminPage() {
         <Button nativeButton={false} render={<Link href="/super-admin/igrejas/nova" />}>
           <Plus className="size-4" />
           Nova
-        </Button>
+        <LinkPendingOverlay /></Button>
       </div>
 
       {churches.length === 0 ? (
@@ -55,7 +56,7 @@ export default async function SuperAdminPage() {
                     </Badge>
                   </CardContent>
                 </Card>
-              </Link>
+              <LinkPendingOverlay /></Link>
             );
           })}
         </div>

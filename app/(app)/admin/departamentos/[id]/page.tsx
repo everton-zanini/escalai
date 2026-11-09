@@ -16,6 +16,7 @@ import {
   removeMembershipAction,
   toggleMembershipRoleAction,
 } from "../actions";
+import { LinkPendingOverlay } from "@/components/loading-overlay";
 
 export default async function DepartamentoDetalhePage({
   params,
@@ -81,7 +82,7 @@ export default async function DepartamentoDetalhePage({
             render={<Link href={`/departamentos/${departmentId}/funcoes`} />}
           >
             Gerenciar funções
-          </Button>
+          <LinkPendingOverlay /></Button>
         </CardHeader>
         <CardContent className="space-y-4">
           <AddMemberForm departmentId={departmentId} availableUsers={availableUsers} />

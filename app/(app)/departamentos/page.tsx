@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/schedule/empty-state";
 import { DepartmentColorDot } from "@/components/schedule/department-color-dot";
 import { Building2, ChevronRight } from "lucide-react";
+import { LinkPendingOverlay } from "@/components/loading-overlay";
 
 export default async function DepartamentosPage() {
   const user = await requireChurchUser();
@@ -71,7 +72,7 @@ export default async function DepartamentosPage() {
                     </CardContent>
                   )}
                 </Card>
-              </Link>
+              <LinkPendingOverlay /></Link>
             );
           })}
         </div>

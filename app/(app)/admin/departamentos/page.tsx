@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/schedule/empty-state";
 import { DepartmentColorDot } from "@/components/schedule/department-color-dot";
 import { Building2, Plus } from "lucide-react";
+import { LinkPendingOverlay } from "@/components/loading-overlay";
 
 export default async function AdminDepartamentosPage() {
   const { churchId } = await requireAdmin();
@@ -23,7 +24,7 @@ export default async function AdminDepartamentosPage() {
         <Button nativeButton={false} render={<Link href="/admin/departamentos/novo" />}>
           <Plus className="size-4" />
           Novo
-        </Button>
+        <LinkPendingOverlay /></Button>
       </div>
 
       {departments.length === 0 ? (
@@ -53,7 +54,7 @@ export default async function AdminDepartamentosPage() {
                   {!department.isActive && <Badge variant="secondary">Inativo</Badge>}
                 </CardContent>
               </Card>
-            </Link>
+            <LinkPendingOverlay /></Link>
           ))}
         </div>
       )}
