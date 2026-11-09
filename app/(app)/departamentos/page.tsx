@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireUser } from "@/lib/permissions";
+import { requireChurchUser } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,11 +8,11 @@ import { DepartmentColorDot } from "@/components/schedule/department-color-dot";
 import { Building2, ChevronRight } from "lucide-react";
 
 export default async function DepartamentosPage() {
-  const user = await requireUser();
+  const user = await requireChurchUser();
 
   const departments = user.isAdmin
     ? await prisma.department.findMany({
-        where: { isActive: true },
+        where: { isActive: true, churchId: user.churchId },
         orderBy: { name: "asc" },
       })
     : await prisma.department.findMany({

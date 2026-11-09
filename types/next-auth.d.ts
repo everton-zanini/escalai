@@ -10,6 +10,8 @@ declare module "@auth/core/types" {
   interface User {
     id: string;
     isAdmin: boolean;
+    isSuperAdmin: boolean;
+    churchId: number | null;
     mustChangePassword: boolean;
     departmentRoles: DepartmentRoleClaim[];
   }
@@ -18,6 +20,8 @@ declare module "@auth/core/types" {
     user: {
       id: string;
       isAdmin: boolean;
+      isSuperAdmin: boolean;
+      churchId: number | null;
       mustChangePassword: boolean;
       departmentRoles: DepartmentRoleClaim[];
     } & DefaultSession["user"];
@@ -28,6 +32,8 @@ declare module "@auth/core/jwt" {
   interface JWT {
     id: string;
     isAdmin: boolean;
+    isSuperAdmin: boolean;
+    churchId: number | null;
     mustChangePassword: boolean;
     departmentRoles: DepartmentRoleClaim[];
   }

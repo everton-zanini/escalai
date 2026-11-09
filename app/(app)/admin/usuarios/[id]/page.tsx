@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/permissions";
+import { manageableUsersWhere } from "@/lib/tenant";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,8 +19,9 @@ export default async function UsuarioDetalhePage({
   const { id } = await params;
   const userId = Number(id);
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
+  const admin = await requireAdmin();
+  const user = await prisma.user.findFirst({
+    where: { id: userId, ...manageableUsersWhere(admin) },
     include: { memberships: { include: { department: true } } },
   });
 

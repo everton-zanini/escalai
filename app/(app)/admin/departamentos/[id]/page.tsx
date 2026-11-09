@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/permissions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,8 +25,9 @@ export default async function DepartamentoDetalhePage({
   const { id } = await params;
   const departmentId = Number(id);
 
-  const department = await prisma.department.findUnique({
-    where: { id: departmentId },
+  const { churchId } = await requireAdmin();
+  const department = await prisma.department.findFirst({
+    where: { id: departmentId, churchId },
     include: {
       memberships: { include: { user: true }, orderBy: { user: { name: "asc" } } },
     },
@@ -35,7 +37,7 @@ export default async function DepartamentoDetalhePage({
 
   const memberUserIds = department.memberships.map((m) => m.userId);
   const availableUsers = await prisma.user.findMany({
-    where: { isActive: true, id: { notIn: memberUserIds } },
+    where: { isActive: true, churchId, id: { notIn: memberUserIds } },
     orderBy: { name: "asc" },
     select: { id: true, name: true, email: true },
   });

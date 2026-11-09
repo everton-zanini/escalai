@@ -43,6 +43,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           name: user.name,
           email: user.email,
           isAdmin: user.isAdmin,
+          isSuperAdmin: user.isSuperAdmin,
+          churchId: user.churchId,
           mustChangePassword: user.mustChangePassword,
           departmentRoles,
         };
@@ -55,6 +57,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user) {
         token.id = user.id;
         token.isAdmin = user.isAdmin;
+        token.isSuperAdmin = user.isSuperAdmin;
+        token.churchId = user.churchId;
         token.mustChangePassword = user.mustChangePassword;
         token.departmentRoles = user.departmentRoles;
       }

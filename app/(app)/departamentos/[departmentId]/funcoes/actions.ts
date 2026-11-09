@@ -43,7 +43,10 @@ export async function deletePositionAction(formData: FormData) {
   await requireDepartmentLeader(departmentId);
 
   try {
-    await prisma.position.delete({ where: { id: positionId } });
+    const { count } = await prisma.position.deleteMany({
+      where: { id: positionId, departmentId },
+    });
+    if (count === 0) throw new Error("not found");
   } catch {
     redirectWithToast(
       `/departamentos/${departmentId}/funcoes`,

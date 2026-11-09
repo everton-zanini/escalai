@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/permissions";
+import { manageableUsersWhere } from "@/lib/tenant";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,7 +9,9 @@ import { EmptyState } from "@/components/schedule/empty-state";
 import { Users, Plus } from "lucide-react";
 
 export default async function AdminUsuariosPage() {
+  const admin = await requireAdmin();
   const users = await prisma.user.findMany({
+    where: manageableUsersWhere(admin),
     orderBy: { name: "asc" },
     select: { id: true, name: true, email: true, isAdmin: true, isActive: true },
   });

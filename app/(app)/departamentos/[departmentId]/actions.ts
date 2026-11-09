@@ -151,6 +151,14 @@ export async function updateEntryAction(
 ): Promise<FormState> {
   await requireDepartmentLeader(departmentId);
 
+  const ownEntry = await prisma.scheduleEntry.findFirst({
+    where: { id: entryId, departmentId },
+    select: { id: true },
+  });
+  if (!ownEntry) {
+    return { error: "Escala não encontrada." };
+  }
+
   const parsed = scheduleEntrySchema.safeParse({
     date: formData.get("date"),
     time: formData.get("time") || undefined,
@@ -211,7 +219,10 @@ export async function deleteEntryAction(formData: FormData) {
   await requireDepartmentLeader(departmentId);
 
   try {
-    await prisma.scheduleEntry.delete({ where: { id: entryId } });
+    const { count } = await prisma.scheduleEntry.deleteMany({
+      where: { id: entryId, departmentId },
+    });
+    if (count === 0) throw new Error("not found");
   } catch {
     redirectWithToast(
       `/departamentos/${departmentId}/${entryId}/editar`,

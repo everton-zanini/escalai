@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { Building2, CalendarDays, Users } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/permissions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function AdminDashboardPage() {
+  const { churchId } = await requireAdmin();
   const [departmentCount, userCount, entryCount] = await Promise.all([
-    prisma.department.count({ where: { isActive: true } }),
-    prisma.user.count({ where: { isActive: true } }),
-    prisma.scheduleEntry.count(),
+    prisma.department.count({ where: { isActive: true, churchId } }),
+    prisma.user.count({ where: { isActive: true, churchId } }),
+    prisma.scheduleEntry.count({ where: { department: { churchId } } }),
   ]);
 
   const cards = [

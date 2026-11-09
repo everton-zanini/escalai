@@ -23,7 +23,7 @@ export default async function LiderPage({
     .map((d) => d.departmentId);
 
   const where: Prisma.ScheduleEntryWhereInput = user.isAdmin
-    ? { date: selectedDate }
+    ? { date: selectedDate, department: { churchId: user.churchId } }
     : { date: selectedDate, departmentId: { in: ledDepartmentIds } };
 
   const entries = await prisma.scheduleEntry.findMany({
@@ -34,7 +34,7 @@ export default async function LiderPage({
 
   const pendingRequests = await prisma.availabilityRequest.findMany({
     where: user.isAdmin
-      ? { status: "PENDENTE" }
+      ? { status: "PENDENTE", department: { churchId: user.churchId } }
       : { status: "PENDENTE", departmentId: { in: ledDepartmentIds } },
     include: { user: true, department: true },
     orderBy: { date: "asc" },

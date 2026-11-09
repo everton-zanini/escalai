@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { hashPassword, generateTempPassword, DEFAULT_PASSWORD } from "@/lib/password";
 import { createUserSchema, updateUserSchema } from "@/lib/validations/user";
 import { redirectWithToast } from "@/lib/toast-redirect";
+import { manageableUsersWhere } from "@/lib/tenant";
 
 export interface FormState {
   error?: string;
@@ -21,7 +22,7 @@ export async function createUserAction(
   _prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   const parsed = createUserSchema.safeParse({
     name: formData.get("name"),
@@ -44,6 +45,7 @@ export async function createUserAction(
       email: parsed.data.email,
       passwordHash,
       mustChangePassword: true,
+      churchId: admin.churchId,
     },
   });
 
@@ -56,7 +58,7 @@ export async function updateUserAction(
   _prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   const parsed = updateUserSchema.safeParse({
     name: formData.get("name"),
@@ -72,19 +74,27 @@ export async function updateUserAction(
     return { error: "Já existe um membro com este e-mail." };
   }
 
-  await prisma.user.update({ where: { id: userId }, data: parsed.data });
+  const { count } = await prisma.user.updateMany({
+    where: { id: userId, ...manageableUsersWhere(admin) },
+    data: parsed.data,
+  });
+  if (count === 0) {
+    return { error: "Membro não encontrado." };
+  }
   revalidatePath("/admin/usuarios");
   revalidatePath(`/admin/usuarios/${userId}`);
   return { success: true };
 }
 
 export async function toggleUserActiveAction(formData: FormData) {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const userId = Number(formData.get("userId"));
 
   let nextActive = false;
   try {
-    const user = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
+    const user = await prisma.user.findFirstOrThrow({
+      where: { id: userId, ...manageableUsersWhere(admin) },
+    });
     nextActive = !user.isActive;
     await prisma.user.update({ where: { id: userId }, data: { isActive: nextActive } });
   } catch {
@@ -108,16 +118,19 @@ export async function resetPasswordAction(
   _prevState: ResetPasswordState,
   formData: FormData
 ): Promise<ResetPasswordState> {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const userId = Number(formData.get("userId"));
 
   const tempPassword = generateTempPassword();
   const passwordHash = await hashPassword(tempPassword);
 
-  await prisma.user.update({
-    where: { id: userId },
+  const { count } = await prisma.user.updateMany({
+    where: { id: userId, ...manageableUsersWhere(admin) },
     data: { passwordHash, mustChangePassword: true },
   });
+  if (count === 0) {
+    return { error: "Membro não encontrado." };
+  }
 
   revalidatePath(`/admin/usuarios/${userId}`);
   return { tempPassword };

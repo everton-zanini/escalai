@@ -15,10 +15,17 @@ async function main() {
 
   const passwordHash = await hashPassword(password);
 
+  const church = await prisma.church.upsert({
+    where: { slug: "igreja-padrao" },
+    update: {},
+    create: { name: "Igreja Padrão", slug: "igreja-padrao", status: "ATIVA" },
+  });
+
   const admin = await prisma.user.upsert({
     where: { email },
     update: {
       isAdmin: true,
+      isSuperAdmin: true,
       isActive: true,
     },
     create: {
@@ -26,10 +33,12 @@ async function main() {
       email,
       passwordHash,
       isAdmin: true,
+      isSuperAdmin: true,
+      churchId: church.id,
     },
   });
 
-  console.log(`Admin pronto: ${admin.email} (id ${admin.id})`);
+  console.log(`Super-admin pronto: ${admin.email} (id ${admin.id}), igreja ${church.slug}`);
 }
 
 main()

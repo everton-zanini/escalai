@@ -19,24 +19,51 @@ enum AvailabilityRequestStatus {
   RECUSADA
 }
 
+enum ChurchStatus {
+  TRIAL
+  ATIVA
+  SUSPENSA
+}
+
+model Church {
+  id        Int          @id @default(autoincrement())
+  name      String       @db.Text
+  slug      String       @unique @db.Text
+  status    ChurchStatus @default(TRIAL)
+  plan      String       @default("basico") @db.Text
+  expiresAt DateTime?    @map("expires_at") @db.Timestamptz(6)
+  notes     String?      @db.Text
+  createdAt DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  users       User[]
+  departments Department[]
+
+  @@map("churches")
+}
+
 model User {
   id                 Int      @id @default(autoincrement())
+  churchId           Int?     @map("church_id")
   name               String   @db.Text
   email              String   @unique @db.Text
   passwordHash       String   @map("password_hash") @db.Text
   isAdmin            Boolean  @default(false) @map("is_admin")
+  isSuperAdmin       Boolean  @default(false) @map("is_super_admin")
   isActive           Boolean  @default(true) @map("is_active")
   mustChangePassword Boolean  @default(false) @map("must_change_password")
   createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt          DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
+  church                       Church?                @relation(fields: [churchId], references: [id], onDelete: Restrict)
   memberships                  DepartmentMembership[]
-  createdEntries               ScheduleEntry[]        @relation("EntryCreatedBy")
+  createdEntries              ScheduleEntry[]        @relation("EntryCreatedBy")
   assignments                  ScheduleAssignment[]
   availabilityRequests         AvailabilityRequest[]  @relation("AvailabilityRequestUser")
   reviewedAvailabilityRequests AvailabilityRequest[]  @relation("AvailabilityRequestReviewer")
   passwordResetTokens          PasswordResetToken[]
 
+  @@index([churchId])
   @@map("users")
 }
 
@@ -56,6 +83,7 @@ model PasswordResetToken {
 
 model Department {
   id          Int      @id @default(autoincrement())
+  churchId    Int      @map("church_id")
   name        String   @db.Text
   description String?  @db.Text
   color       String   @default("#64748b") @db.Text
@@ -63,11 +91,13 @@ model Department {
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
+  church               Church                 @relation(fields: [churchId], references: [id], onDelete: Restrict)
   memberships          DepartmentMembership[]
   entries              ScheduleEntry[]
   positions            Position[]
   availabilityRequests AvailabilityRequest[]
 
+  @@unique([churchId, name])
   @@map("departments")
 }
 

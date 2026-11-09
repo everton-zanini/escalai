@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Home, CalendarDays, CalendarOff, User, ShieldCheck, Users } from "lucide-react";
+import { Home, CalendarDays, CalendarOff, User, ShieldCheck, Users, Church } from "lucide-react";
 
 interface BottomNavProps {
   isAdmin: boolean;
+  isSuperAdmin: boolean;
   isLeader: boolean;
 }
 
@@ -17,12 +18,13 @@ const baseItems = [
   { href: "/perfil", label: "Perfil", icon: User },
 ];
 
-export function BottomNav({ isAdmin, isLeader }: BottomNavProps) {
+export function BottomNav({ isAdmin, isSuperAdmin, isLeader }: BottomNavProps) {
   const pathname = usePathname();
   const items = [
     ...baseItems,
     ...(isLeader ? [{ href: "/lider", label: "Líder", icon: Users }] : []),
     ...(isAdmin ? [{ href: "/admin", label: "Admin", icon: ShieldCheck }] : []),
+    ...(isSuperAdmin ? [{ href: "/super-admin", label: "Igrejas", icon: Church }] : []),
   ];
 
   return (
