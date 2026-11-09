@@ -15,7 +15,6 @@ export const authConfig = {
         "/igreja-suspensa",
       ].includes(request.nextUrl.pathname);
       const isOnAdmin = request.nextUrl.pathname.startsWith("/admin");
-      const isOnSuperAdmin = request.nextUrl.pathname.startsWith("/super-admin");
 
       if (isOnPublicAuthPage) {
         return true;
@@ -29,10 +28,8 @@ export const authConfig = {
         return Response.redirect(new URL("/", request.nextUrl));
       }
 
-      if (isOnSuperAdmin && !auth.user.isSuperAdmin) {
-        return Response.redirect(new URL("/", request.nextUrl));
-      }
-
+      // /super-admin é protegido por requireSuperAdmin (lê do banco): o JWT pode
+      // estar desatualizado para quem virou super-admin depois do login.
       return true;
     },
     session({ session, token }) {
