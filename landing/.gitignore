@@ -2,3 +2,4 @@ shots/
 .taste-skill/chrome-*/
 .taste-skill/consistency/
 .taste-skill/*.txt
+.taste-skill/gate.json
