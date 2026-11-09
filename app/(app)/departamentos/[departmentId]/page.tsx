@@ -6,49 +6,58 @@ import { Button } from "@/components/ui/button";
 import { ScheduleEntryCard } from "@/components/schedule/schedule-entry-card";
 import { EmptyState } from "@/components/schedule/empty-state";
 import { LinkPendingOverlay } from "@/components/loading-overlay";
-import { getPeriodRange, type SchedulePeriod } from "@/lib/utils";
+import { DepartmentMonthCalendar } from "@/components/schedule/department-month-calendar";
+import { formatDateParam, formatDatePtBR } from "@/lib/utils";
 import { CalendarDays, ListTree, Plus } from "lucide-react";
-
-const PERIOD_OPTIONS: { value: SchedulePeriod; label: string }[] = [
-  { value: "dia", label: "Dia" },
-  { value: "semana", label: "Semana" },
-  { value: "mes", label: "Mês" },
-  { value: "todas", label: "Todas" },
-];
-
-function resolvePeriod(raw: string | undefined): SchedulePeriod {
-  return PERIOD_OPTIONS.some((option) => option.value === raw)
-    ? (raw as SchedulePeriod)
-    : "mes";
-}
 
 export default async function DepartamentoEscalaPage({
   params,
   searchParams,
 }: {
   params: Promise<{ departmentId: string }>;
-  searchParams: Promise<{ periodo?: string }>;
+  searchParams: Promise<{ mes?: string; data?: string }>;
 }) {
   const { departmentId: departmentIdParam } = await params;
   const departmentId = Number(departmentIdParam);
-  const { periodo: periodoParam } = await searchParams;
-  const period = resolvePeriod(periodoParam);
+  const { mes, data } = await searchParams;
 
   const user = await requireDepartmentMember(departmentId);
 
-  const department = await prisma.department.findUnique({ where: { id: departmentId } });
+  const selectedMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(data ?? "");
+  const selectedDate = selectedMatch
+    ? new Date(Date.UTC(Number(selectedMatch[1]), Number(selectedMatch[2]) - 1, Number(selectedMatch[3])))
+    : null;
+
+  const monthMatch = /^(\d{4})-(\d{2})$/.exec(mes ?? "");
+  const now = new Date();
+  const year = monthMatch ? Number(monthMatch[1]) : (selectedDate?.getUTCFullYear() ?? now.getFullYear());
+  const monthIndex = monthMatch ? Number(monthMatch[2]) - 1 : (selectedDate?.getUTCMonth() ?? now.getMonth());
+  const monthParam = `${year}-${String(monthIndex + 1).padStart(2, "0")}`;
+
+  // The grid also shows days of the neighbouring months.
+  const gridFrom = new Date(Date.UTC(year, monthIndex, 1 - 7));
+  const gridTo = new Date(Date.UTC(year, monthIndex + 1, 7));
+
+  // Light queries only: the month's dates for the dots, and the full entries
+  // (with people and positions) just for the day the user opened.
+  const [department, monthEntries, dayEntries] = await Promise.all([
+    prisma.department.findUnique({ where: { id: departmentId } }),
+    prisma.scheduleEntry.findMany({
+      where: { departmentId, date: { gte: gridFrom, lte: gridTo } },
+      select: { date: true },
+      distinct: ["date"],
+    }),
+    selectedDate
+      ? prisma.scheduleEntry.findMany({
+          where: { departmentId, date: selectedDate },
+          include: { assignments: { include: { user: true, position: true } } },
+          orderBy: [{ time: { sort: "asc", nulls: "last" } }],
+        })
+      : Promise.resolve(null),
+  ]);
   if (!department) notFound();
 
-  const range = getPeriodRange(period);
-
-  const entries = await prisma.scheduleEntry.findMany({
-    where: {
-      departmentId,
-      ...(range ? { date: { gte: range.from, lte: range.to } } : {}),
-    },
-    include: { assignments: { include: { user: true, position: true } } },
-    orderBy: [{ date: "asc" }, { time: { sort: "asc", nulls: "last" } }],
-  });
+  const markedDates = monthEntries.map((entry) => formatDateParam(entry.date));
 
   const roleClaim = user.departmentRoles.find((d) => d.departmentId === departmentId);
   const canManage = user.isAdmin || roleClaim?.role === "LIDER";
@@ -80,38 +89,37 @@ export default async function DepartamentoEscalaPage({
         )}
       </div>
 
-      <div className="flex gap-2">
-        {PERIOD_OPTIONS.map((option) => (
-          <Button
-            key={option.value}
-            size="sm"
-            variant={option.value === period ? "default" : "outline"}
-            nativeButton={false}
-            render={<Link href={`/departamentos/${departmentId}?periodo=${option.value}`} />}
-          >
-            {option.label}
-            <LinkPendingOverlay />
-          </Button>
-        ))}
-      </div>
+      <DepartmentMonthCalendar
+        basePath={`/departamentos/${departmentId}`}
+        month={monthParam}
+        markedDates={markedDates}
+        selected={selectedDate ? formatDateParam(selectedDate) : null}
+        color={department.color}
+      />
 
-      {entries.length === 0 ? (
-        <EmptyState
-          icon={CalendarDays}
-          title={period === "todas" ? "Nenhuma escala lançada ainda" : "Nenhuma escala neste período"}
-        />
-      ) : (
-        <div className="space-y-3">
-          {entries.map((entry) => (
-            <ScheduleEntryCard
-              key={entry.id}
-              entry={entry}
-              departmentId={departmentId}
-              canManage={canManage}
-              color={department.color}
-            />
-          ))}
-        </div>
+      {selectedDate && dayEntries && (
+        <section className="space-y-3" aria-live="polite">
+          <h2 className="text-base font-semibold capitalize">{formatDatePtBR(selectedDate)}</h2>
+          {dayEntries.length === 0 ? (
+            <EmptyState icon={CalendarDays} title="Nenhuma escala neste dia" />
+          ) : (
+            dayEntries.map((entry) => (
+              <ScheduleEntryCard
+                key={entry.id}
+                entry={entry}
+                departmentId={departmentId}
+                canManage={canManage}
+                color={department.color}
+              />
+            ))
+          )}
+        </section>
+      )}
+
+      {!selectedDate && (
+        <p className="text-center text-sm text-muted-foreground">
+          Toque em um dia do calendário para ver a escala.
+        </p>
       )}
     </div>
   );

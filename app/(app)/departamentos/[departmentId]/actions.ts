@@ -5,6 +5,7 @@ import { requireDepartmentLeader } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { scheduleEntrySchema } from "@/lib/validations/schedule";
 import { redirectWithToast } from "@/lib/toast-redirect";
+import { formatDateParam } from "@/lib/utils";
 
 export interface FormState {
   error?: string;
@@ -140,7 +141,11 @@ export async function createEntryAction(
   });
 
   revalidatePath(`/departamentos/${departmentId}`);
-  redirectWithToast(`/departamentos/${departmentId}`, "success", "Escala criada com sucesso.");
+  redirectWithToast(
+    `/departamentos/${departmentId}?data=${formatDateParam(date)}`,
+    "success",
+    "Escala criada com sucesso."
+  );
 }
 
 export async function updateEntryAction(
@@ -209,7 +214,11 @@ export async function updateEntryAction(
   ]);
 
   revalidatePath(`/departamentos/${departmentId}`);
-  redirectWithToast(`/departamentos/${departmentId}`, "success", "Escala atualizada com sucesso.");
+  redirectWithToast(
+    `/departamentos/${departmentId}?data=${formatDateParam(date)}`,
+    "success",
+    "Escala atualizada com sucesso."
+  );
 }
 
 export async function deleteEntryAction(formData: FormData) {
