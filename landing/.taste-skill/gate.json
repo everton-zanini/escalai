@@ -1,0 +1,461 @@
+{
+ "start": "2026-11-09T13:19:16.077Z",
+ "round": 1,
+ "idle": 0,
+ "errors": 0,
+ "status": "pass",
+ "history": [
+  {
+   "at": "2026-11-09T13:43:26.537Z",
+   "mode": "manual",
+   "status": "fail",
+   "fails": 2,
+   "round": 1,
+   "reused": false,
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-09T13:43:49.021Z",
+   "mode": "manual",
+   "status": "pass",
+   "fails": 0,
+   "round": 1,
+   "reused": true,
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-09T13:49:07.171Z",
+   "mode": "hook",
+   "host": "claude",
+   "decision": "allow",
+   "reason": "no build is active here",
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-09T13:57:11.678Z",
+   "mode": "hook",
+   "host": "claude",
+   "decision": "allow",
+   "reason": "no build is active here",
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-09T14:05:36.829Z",
+   "mode": "hook",
+   "host": "claude",
+   "decision": "allow",
+   "reason": "no build is active here",
+   "stopHookActive": false
+  }
+ ],
+ "max": 3,
+ "marker": {
+  "page": "index.html",
+  "url": null,
+  "root": null,
+  "kind": "software",
+  "category": "app de escalas para igrejas",
+  "primary": "Falar com a gente",
+  "rounds": 3,
+  "start": "2026-11-09T13:19:16.077Z",
+  "by": "gate.mjs --start"
+ },
+ "manual": true,
+ "roundKey": "06f9a8ccc179659b:f6973c7e",
+ "roundFree": false,
+ "idleFree": false,
+ "blockKey": null,
+ "fp": "06f9a8ccc179659b",
+ "page": "index.html",
+ "found": {
+  "fails": [
+   {
+    "check": "copy-headings",
+    "where": "div.wrap > div.grid.open-cards > article.card.card--row:nth-of-type(3) > h3 \"Decide os pedidos de ausência\"",
+    "msg": "\"Decide os pedidos de ausência\" names no product, part, place or section (6 headings like it; at most one brand line per page) (and 5 more like it: \"Ausência justificada em \", \"Pessoas e equipes sob co\", \"Perguntas\", \"O que acontece no primei\", ...)",
+    "fix": "name the thing in every heading: the product, a part, the place or a section noun",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "copy-headings"
+    ],
+    "wheres": [
+     "div.wrap > div.grid.open-cards > article.card.card--row:nth-of-type(3) > h3 \"Decide os pedidos de ausência\""
+    ]
+   },
+   {
+    "check": "row-lines",
+    "where": "section.hero.hero--collage > div.wrap > div.hero-text.grid > div.hero__art.span-6 \"Escalaí · Louvor HojeEscalasFunçõesAusên\"",
+    "msg": "a clipped carousel: its window runs 732-1360px, not on the container at 80-1360px; 1 item cut at rest (SR-7)",
+    "fix": "show every item inside the container, or stack them: no sideways scroller, no half-cut carousel",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "row-lines"
+    ],
+    "wheres": [
+     "section.hero.hero--collage > div.wrap > div.hero-text.grid > div.hero__art.span-6 \"Escalaí · Louvor HojeEscalasFunçõesAusên\""
+    ]
+   },
+   {
+    "check": "row-lines",
+    "where": "section#admin > div.wrap > div.mo-mq > div.mo-mq__rail \"LouvorRecepçãoMídiaInfantilSomCozinhaJov\"",
+    "msg": "a clipped carousel: 1 item cut at rest (SR-7)",
+    "fix": "show every item inside the container, or stack them: no sideways scroller, no half-cut carousel",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "row-lines"
+    ],
+    "wheres": [
+     "section#admin > div.wrap > div.mo-mq > div.mo-mq__rail \"LouvorRecepçãoMídiaInfantilSomCozinhaJov\""
+    ]
+   },
+   {
+    "check": "spill",
+    "where": "#admin ul.mo-mq__track \"LouvorRecepçãoMídiaInfantilSomCo\"",
+    "msg": "x 80 to 1364.2, the page runs 80 to 1360",
+    "fix": "keep it inside the .wrap; nothing past the right edge",
+    "widths": [
+     1440
+    ],
+    "from": "layout",
+    "ids": [
+     "spill"
+    ],
+    "wheres": [
+     "#admin ul.mo-mq__track \"LouvorRecepçãoMídiaInfantilSomCo\""
+    ]
+   },
+   {
+    "check": "bleed-one-side",
+    "where": "#admin ul.mo-mq__track.mo-mq__clone \"LouvorRecepçãoMídiaInfantilSomCo\"",
+    "msg": "runs from x 1428.2 out to the right viewport edge; the left side stays at 80",
+    "fix": "bleed the visual to both edges or keep it on the .wrap lines",
+    "widths": [
+     1440
+    ],
+    "from": "layout",
+    "ids": [
+     "bleed-one-side"
+    ],
+    "wheres": [
+     "#admin ul.mo-mq__track.mo-mq__clone \"LouvorRecepçãoMídiaInfantilSomCo\""
+    ]
+   }
+  ],
+  "warns": [
+   {
+    "check": "spill",
+    "where": "div.wrap > div.hero-text.grid > div.hero__art.span-6 > div.ly-piece.ly-piece--note \"Pedido da Carla Aprovado ! Pede ausência\"",
+    "msg": "runs 54px past the bottom edge of the panel it sits on (div.wrap > div.hero-text.grid > div.hero__art.span-6 > div.ly-piece.ly-piece--main) (inside a held section or scroll scene, whose motion --quick does not check)",
+    "fix": "keep the box inside the panel it starts on: shrink it, or grow the panel to hold it",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "cut-text",
+    "where": "div.mo-mq > div.mo-mq__rail > ul.mo-mq__track:nth-of-type(1) > li:nth-of-type(1) \"Louvor\"",
+    "msg": "cut 34px at the left by the overflow of section#admin > div.wrap > div.mo-mq > div.mo-mq__rail (inside a held section or scroll scene, whose motion --quick does not check)",
+    "fix": "give the text room: no overflow clipping a line, no line past its box",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "copy-buttons",
+    "where": "header.nav.nav--centre > div.wrap.nav__bar > div.nav__actions > a.btn.btn--primary \"Falar com a gente\"",
+    "msg": "\"Falar com a gente\" does not start with a verb (book, buy, try, start, get, see...)",
+    "fix": "label buttons with a verb and what the visitor gets (\"Book a room\", \"Start free trial\")",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "contrast",
+    "where": "div.ly-piece.ly-piece--main > div.d-win__body > div.d-side > span.d-side__label \"Equipes\"",
+    "msg": "body text over a effect reads at 3.3:1 at its worst tenth (needs 4.5:1) (inside a held section or scroll scene, whose motion --quick does not check)",
+    "fix": "put the text on a calm part of the picture, or on a solid panel",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "text-contrast",
+    "where": "div.ui-cal__events > div.ui-cal__ev:nth-of-type(2) > span.ui-cal__evtext > span.ui-cal__evsub \"Culto de quarta, 19h30\"",
+    "msg": "31 lines of text in drawn mocks read under 4.5:1 (6 colour pairs), the worst \"Culto de quarta, 19h30\" in #b7b5b0 on #f6f4ef at 1.87:1",
+    "fix": "lift the mocks' muted text (labels, meta, initials) to 4.5:1 on their own panel, or set it larger",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "section-gaps",
+    "where": "main#top > section.hero.hero--collage / section#voluntario",
+    "msg": "178px between these sections, -33% against the median 266px",
+    "fix": "use one gap between sections (all within 25% of each other)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "section-gaps",
+    "where": "section#voluntario / section#lider",
+    "msg": "186px between these sections, -30% against the median 266px",
+    "fix": "use one gap between sections (all within 25% of each other)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "nav-labels",
+    "where": "header.nav.nav--centre > div.wrap.nav__bar > a.nav__logo \"Escalaí\"",
+    "msg": "\"Escalaí\" opens a section headed \"Escala de voluntários para igrejas, no celular\"",
+    "fix": "name each nav link after the heading of the section it opens",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "nav-labels",
+    "where": "div.wrap.nav__bar > nav.nav__links > div.nav__item:nth-of-type(1) > a.nav__link \"Voluntário\"",
+    "msg": "\"Voluntário\" opens a section headed \"A escala do mês na palma da mão\"",
+    "fix": "name each nav link after the heading of the section it opens",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "nav-labels",
+    "where": "div.wrap.nav__bar > nav.nav__links > div.nav__item:nth-of-type(2) > a.nav__link \"Líder\"",
+    "msg": "\"Líder\" opens a section headed \"Monte a escala da equipe em poucos toques. Pessoas\"",
+    "fix": "name each nav link after the heading of the section it opens",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "fade-cut",
+    "where": "div.d-rows > div.d-row:nth-of-type(6) > div > small \"Vocal\"",
+    "msg": "a line of div.ly-piece.ly-piece--main fades out under its edge (\"Vocal\"): drawn at a fraction of #7b8086 on #ffffff, half-erased (inside a held section or scroll scene, whose motion --quick does not check)",
+    "fix": "fit the mock's rows inside its panel (fewer rows, a taller panel), or end the fade below the last whole row: no row half-erased",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "copy-length",
+    "where": "section#faq \"Perguntas\"",
+    "msg": "1 section over 90 words a screen outside the UI mocks (\"Perguntas\" 111); 64 words a screen across the page (384 words in 6 screens): a tech page says it in about 80 or fewer",
+    "fix": "cut every section to its heading, one line and the product UI: the UI says the rest; no second paragraph, no list of feature sentences",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "nav-current",
+    "where": "header.nav.nav--centre",
+    "msg": "the nav stays on screen with 5 links to the page's sections, but never marks the one you are in (no link changes as the page scrolls)",
+    "fix": "mark the link of the section on screen (a colour, a weight or a line under it) as the visitor scrolls",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "skip-link",
+    "where": "header.nav.nav--centre > div.wrap.nav__bar > a.skip-link:nth-of-type(1) \"Ir para o conteúdo\"",
+    "msg": "the first Tab stop is \"Ir para o conteúdo\", not a skip link: a keyboard user tabs through the whole nav on every visit",
+    "fix": "add the starter's skip link as the header's first child: <a class=\"skip-link\" href=\"#top\">Skip to content</a>",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "action-repeat",
+    "where": "header.nav.nav--centre > div.wrap.nav__bar > div.nav__actions > a.btn.btn--primary \"falar com a gente\"",
+    "msg": "\"falar com a gente\" shows 2 times on the first screen at 1440px (nav, hero): the nav's button and the hero's; nothing else on the screen may repeat it",
+    "fix": "show the action once a screen besides the nav's button: the hero's, the close's or the phone bar's, never all at once",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "container-edges",
+    "where": "div.mo-mq > div.mo-mq__rail > ul.mo-mq__track:nth-of-type(1) > li:nth-of-type(1) \"Louvor\"",
+    "msg": "1 text block starts on a left line at x 71, -9px from the container's left: text starts on the container's left, or on one split line (x 623, 732, 841) (it is in a scroll scene: told as a WARN) (SR-6)",
+    "fix": "start the text on the container's left, or on the one split line every split shares",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "nav",
+    "where": "header.nav.nav--centre > div.wrap.nav__bar > button.nav__toggle",
+    "msg": "the nav is lopsided: its last item ends 13px inside the content's edge (366px), while its first starts on the other edge",
+    "fix": "start the nav's first item and end its last on the content's two edges",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "cut-text",
+    "where": "div.d-rows > div.d-row:nth-of-type(2) > div > small \"Bateria\"",
+    "msg": "cut 13px at the bottom by the overflow of section.hero.hero--collage > div.wrap > div.hero-text.grid > div.hero__art.span-6 (inside a held section or scroll scene, whose motion --quick does not check) (and 1 more like it: \"Escalado\")",
+    "fix": "give the text room: no overflow clipping a line, no line past its box",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "cut-text",
+    "where": "div.ui-cal__events > div.ui-cal__ev:nth-of-type(1) > span.ui-cal__date > i \"Nov\"",
+    "msg": "cut 5px at the bottom by the overflow of section#voluntario > div.wrap > div.ui.app > div.app__pane.app__pane--open: a fragment run out through its panel's edge (and 1 more like it: \"Culto da noite, 18h\")",
+    "fix": "give the text room: no overflow clipping a line, no line past its box",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "text-contrast",
+    "where": "div.ui.ui-panel > div.ui-cal__days > span.ui-cal__d:nth-of-type(21) > b \"15\"",
+    "msg": "13 lines of text in drawn mocks read under 4.5:1 (2 colour pairs), the worst \"15\" in #894418 on #1c1917 at 2.42:1",
+    "fix": "lift the mocks' muted text (labels, meta, initials) to 4.5:1 on their own panel, or set it larger",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "proximity",
+    "where": "section#admin > div.wrap > div.grid.grid--top > div.frame.frame--lit \"Pessoas e equipes sob controle O adminis\"",
+    "msg": "stacked at this width, the visual starts 14px under the text and buttons above it (\"Pessoas e equipes sob controle\"): it reads glued to them",
+    "fix": "give the stacked split the section's own gap between text and visual (40px or more on a phone)",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   }
+  ],
+  "crashed": [],
+  "seconds": {
+   "consistency": 112,
+   "layout": 17
+  }
+ },
+ "open": [],
+ "waived": [
+  {
+   "check": "copy-headings",
+   "where": "div.wrap > div.grid.open-cards > article.card.card--row:nth-of-type(3) > h3 \"Decide os pedidos de ausência\"",
+   "msg": "\"Decide os pedidos de ausência\" names no product, part, place or section (6 headings like it; at most one brand line per page) (and 5 more like it: \"Ausência justificada em \", \"Pessoas e equipes sob co\", \"Perguntas\", \"O que acontece no primei\", ...)",
+   "fix": "name the thing in every heading: the product, a part, the place or a section noun",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "copy-headings"
+   ],
+   "wheres": [
+    "div.wrap > div.grid.open-cards > article.card.card--row:nth-of-type(3) > h3 \"Decide os pedidos de ausência\""
+   ],
+   "reason": "the page is pt-BR; the checker's section-noun list is English, so Portuguese headings read as unnamed"
+  },
+  {
+   "check": "row-lines",
+   "where": "section.hero.hero--collage > div.wrap > div.hero-text.grid > div.hero__art.span-6 \"Escalaí · Louvor HojeEscalasFunçõesAusên\"",
+   "msg": "a clipped carousel: its window runs 732-1360px, not on the container at 80-1360px; 1 item cut at rest (SR-7)",
+   "fix": "show every item inside the container, or stack them: no sideways scroller, no half-cut carousel",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "row-lines"
+   ],
+   "wheres": [
+    "section.hero.hero--collage > div.wrap > div.hero-text.grid > div.hero__art.span-6 \"Escalaí · Louvor HojeEscalasFunçõesAusên\""
+   ],
+   "reason": "the dealt collage hero: its window is cut by the art frame on purpose (layout-v4 hero collage)"
+  },
+  {
+   "check": "row-lines",
+   "where": "section#admin > div.wrap > div.mo-mq > div.mo-mq__rail \"LouvorRecepçãoMídiaInfantilSomCozinhaJov\"",
+   "msg": "a clipped carousel: 1 item cut at rest (SR-7)",
+   "fix": "show every item inside the container, or stack them: no sideways scroller, no half-cut carousel",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "row-lines"
+   ],
+   "wheres": [
+    "section#admin > div.wrap > div.mo-mq > div.mo-mq__rail \"LouvorRecepçãoMídiaInfantilSomCozinhaJov\""
+   ],
+   "reason": "marquee-row is the dealt moment: a looping row clipped at both edges, with a pause button"
+  },
+  {
+   "check": "spill",
+   "where": "#admin ul.mo-mq__track \"LouvorRecepçãoMídiaInfantilSomCo\"",
+   "msg": "x 80 to 1364.2, the page runs 80 to 1360",
+   "fix": "keep it inside the .wrap; nothing past the right edge",
+   "widths": [
+    1440
+   ],
+   "from": "layout",
+   "ids": [
+    "spill"
+   ],
+   "wheres": [
+    "#admin ul.mo-mq__track \"LouvorRecepçãoMídiaInfantilSomCo\""
+   ],
+   "reason": "the marquee track sits inside the rail's overflow:hidden mask; only the moment's own loop moves it"
+  },
+  {
+   "check": "bleed-one-side",
+   "where": "#admin ul.mo-mq__track.mo-mq__clone \"LouvorRecepçãoMídiaInfantilSomCo\"",
+   "msg": "runs from x 1428.2 out to the right viewport edge; the left side stays at 80",
+   "fix": "bleed the visual to both edges or keep it on the .wrap lines",
+   "widths": [
+    1440
+   ],
+   "from": "layout",
+   "ids": [
+    "bleed-one-side"
+   ],
+   "wheres": [
+    "#admin ul.mo-mq__track.mo-mq__clone \"LouvorRecepçãoMídiaInfantilSomCo\""
+   ],
+   "reason": "the marquee's copy for the loop sits clipped inside the rail's overflow:hidden mask, never visible past the wrap"
+  }
+ ],
+ "warnCount": 21,
+ "at": "2026-11-09T13:43:49.050Z"
+}

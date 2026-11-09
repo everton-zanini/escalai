@@ -1,0 +1,7 @@
+[
+ {"check":"row-lines","target":"section.hero.hero--collage","reason":"the dealt collage hero: its window is cut by the art frame on purpose (layout-v4 hero collage)"},
+ {"check":"row-lines","target":"section#admin","reason":"marquee-row is the dealt moment: a looping row clipped at both edges, with a pause button"},
+ {"check":"copy-headings","target":"article.card.card--row:nth-of-type(3)","reason":"the page is pt-BR; the checker's section-noun list is English, so Portuguese headings read as unnamed"},
+ {"check":"spill","target":"#admin ul.mo-mq__track","reason":"the marquee track sits inside the rail's overflow:hidden mask; only the moment's own loop moves it"},
+ {"check":"bleed-one-side","target":"#admin ul.mo-mq__track.mo-mq__clone","reason":"the marquee's copy for the loop sits clipped inside the rail's overflow:hidden mask, never visible past the wrap"}
+]
